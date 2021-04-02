@@ -1,0 +1,19 @@
+.logo{
+    max-width: 50%;
+    max-height: 50%;
+}
+p{
+    font-size: 15px;
+    color: black;
+}
+.p-5 {
+    padding: 3rem;
+    padding-bottom: 0;
+}
+body {
+    display: table;
+    font-family: "Open Sans", sans-serif;
+    font-size: 15px;
+    width: 100%;
+}
+
