@@ -1,7 +1,8 @@
 import React from 'react';
-import Axios from 'axios';
 import './login.css';
 import { notify } from './../../util/notify';
+
+import httpClient from './../../util/httpClient';
 
 export class Login extends React.Component {
     constructor(){
@@ -21,13 +22,8 @@ export class Login extends React.Component {
             isSubmitting: true
         })
 
-        Axios.post(
-            process.env.REACT_APP_HOST,
-            this.state.data,
-            {
-                headers: { 'Content-Type': 'application/json' },
-                responseType: 'json'
-            }
+        httpClient.post(
+           '/', this.state.data
         ).then(data=>{
             this.props.history.push('/dashboard');
         }).catch(err=>{
