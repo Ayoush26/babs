@@ -144,9 +144,17 @@ class FormWithoutRouter extends React.Component {
         const subjectArrayDefault = Object.keys(this.state.subjects)
 
         let subjects = subjectArrayDefault.map((subject, index) => {
-            return (<div key={index} className="form-group"><label htmlFor="street" className=" form-control-label">{subject}<h4 style={{display:'inline'}}>&nbsp;({this.state.fullMarks[subject]})</h4></label><input type="number" className="form-control" onChange={this.handleSubject} name={subject} /></div>)
+            return (<div key={index} className="form-group"><label htmlFor="street" className=" form-control-label">{subject}<h4 style={{display:'inline'}}>&nbsp;({this.state.fullMarks[subject]})</h4></label>{this.state.fullMarks[subject]==='Grade'? <select  className="form-control" onChange={this.handleSubject} name={subject}>
+                <option value='A+'>A+</option>
+                <option value='A'>A</option>
+                <option value='B+'>B+</option>
+                <option value='B'>B</option>
+                <option value='C+'>C+</option>
+                <option value='C'>C</option>
+                <option value='D+'>D+</option>
+                <option value='D'>D</option>
+            </select> : <input type="number" className="form-control" onChange={this.handleSubject} name={subject} />}</div>)
         })
-
 
         let btnM = this.state.isLoading ? <button id="payment-button" disabled={true} onClick={this.handleClick} type="submit" className="btn btn-lg btn-info btn-block">
             &nbsp;

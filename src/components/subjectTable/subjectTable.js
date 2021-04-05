@@ -228,7 +228,7 @@ class SubjectTableWithoutRouter extends React.Component {
                             <label><h5>Name:</h5></label>
                             <input name="name" onChange={this.changeHandler} defaultValue={this.state.currentSubjectName} className="form-control" ></input>
                             <label><h5 className="pt-1">Full Marks:</h5></label>
-                            <input type="number" name="fullMarks" onChange={this.changeHandler} defaultValue={this.state.currentSubjectMarks} className="form-control" ></input>
+                            <input type="text" name="fullMarks" onChange={this.changeHandler} defaultValue={this.state.currentSubjectMarks} className="form-control" ></input>
                         </form>
                         <button onClick={this.edit} className="btn btn-warning">Save Changes</button>
                         <button className="btn btn-danger m-1" onClick={this.closeModal}>Close</button>

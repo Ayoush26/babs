@@ -56,7 +56,7 @@ export class Login extends React.Component {
         return <>
                 <div className="login-form" onSubmit = {this.handleSubmit}>
                     <form>
-                        <h2 className="text-center">Billing System</h2>
+                        <h2 className="text-center">Babs Admin</h2>
                             <div className="form-group">
                                 <input className="form-control" onChange={this.handleChange} type="text" name="username" placeholder="Username"></input>
                            </div>
