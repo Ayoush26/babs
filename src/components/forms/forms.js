@@ -29,7 +29,9 @@ class FormWithoutRouter extends React.Component {
             term: 'First',
             annualYear: '2020-2021',
             subjects: {},
-            fullMarks:{}
+            fullMarks: {},
+            Name: '',
+            Roll: ''
         }
     }
 
@@ -38,10 +40,10 @@ class FormWithoutRouter extends React.Component {
         try {
             const subjects = await Axios.get(`${process.env.REACT_APP_HOST}/subject/${this.state.class}`);
             let newSubjects = {};
-            let newFullMarks={}
+            let newFullMarks = {}
             subjects.data.data.map((subject) => {
                 newSubjects[subject.Name] = 0;
-                newFullMarks[subject.Name]=subject.FullMarks
+                newFullMarks[subject.Name] = subject.FullMarks
             })
             this.setState((preState) => {
                 return {
@@ -61,6 +63,26 @@ class FormWithoutRouter extends React.Component {
                 ...preState,
                 [name]: value
             }
+        }, async () => {
+            if (this.state.sheet !== 'marksheet') {
+                try {
+                    const {data} = await Axios.get(`${process.env.REACT_APP_HOST}/marksheet/${this.state.class}/${this.state.Roll}`)
+                    const marksInfo = data.data.marksInfo;
+                    
+                    this.setState((prevState)=>{
+                        return{
+                            ...prevState,
+                            Name: data.data.Name?data.data.Name:prevState.Name,
+                            subjects: marksInfo
+                        }
+                    },()=>{
+                       console.log(this.state.subjects) 
+                    })
+                }catch(e){
+                    console.log(e)
+                }
+            }
+
         })
     }
     handleSubject = (e) => {
@@ -114,25 +136,25 @@ class FormWithoutRouter extends React.Component {
         })
     }
 
-    handleClass=async(e)=>{
-        const {name,value}=e.target;
-        try{
+    handleClass = async (e) => {
+        const { name, value } = e.target;
+        try {
             const subjects = await Axios.get(`${process.env.REACT_APP_HOST}/subject/${value}`);
             let newSubjects = {};
-            let newFullMarks= {};
+            let newFullMarks = {};
             subjects.data.data.map((subject) => {
                 newSubjects[subject.Name] = 0;
-                newFullMarks[subject.Name]= subject.FullMarks;
+                newFullMarks[subject.Name] = subject.FullMarks;
             })
-            this.setState((preState)=>{
-                return{
+            this.setState((preState) => {
+                return {
                     ...preState,
                     [name]: value,
-                    subjects:newSubjects,
+                    subjects: newSubjects,
                     fullMarks: newFullMarks
                 }
             })
-        }catch(e){
+        } catch (e) {
             console.log(e)
         }
     }
@@ -144,7 +166,7 @@ class FormWithoutRouter extends React.Component {
         const subjectArrayDefault = Object.keys(this.state.subjects)
 
         let subjects = subjectArrayDefault.map((subject, index) => {
-            return (<div key={index} className="form-group"><label htmlFor="street" className=" form-control-label">{subject}<h4 style={{display:'inline'}}>&nbsp;({this.state.fullMarks[subject]})</h4></label>{this.state.fullMarks[subject]==='Grade'? <select  className="form-control" onChange={this.handleSubject} name={subject}>
+            return (<div key={index} className="form-group"><label htmlFor="street" className=" form-control-label">{subject}<h4 style={{ display: 'inline' }}>&nbsp;({this.state.fullMarks[subject]})</h4></label>{this.state.fullMarks[subject] === 'Grade' ? <select value={this.state.subjects[subject]} className="form-control" onChange={this.handleSubject} name={subject}>
                 <option value='A+'>A+</option>
                 <option value='A'>A</option>
                 <option value='B+'>B+</option>
@@ -153,7 +175,7 @@ class FormWithoutRouter extends React.Component {
                 <option value='C'>C</option>
                 <option value='D+'>D+</option>
                 <option value='D'>D</option>
-            </select> : <input type="number" className="form-control" onChange={this.handleSubject} name={subject} />}</div>)
+            </select> : <input type="number" value={this.state.subjects[subject]===0?'':this.state.subjects[subject]} className="form-control" onChange={this.handleSubject} name={subject} />}</div>)
         })
 
         let btnM = this.state.isLoading ? <button id="payment-button" disabled={true} onClick={this.handleClick} type="submit" className="btn btn-lg btn-info btn-block">
@@ -237,7 +259,7 @@ class FormWithoutRouter extends React.Component {
 
                                                 <div className="form-group has-success">
                                                     <label htmlFor="cc-name" className="control-label mb-1">Name</label>
-                                                    <input id="cc-name" onChange={this.handleChange} name="Name" type="text" className="form-control cc-name valid" data-val="true" data-val-required="Please enter the name on card" autoComplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name" />
+                                                    <input defaultValue={this.state.Name} id="cc-name" onChange={this.handleChange} name="Name" type="text" className="form-control cc-name valid" data-val="true" data-val-required="Please enter the name on card" autoComplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name" />
                                                     <span className="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true" />
                                                 </div>
                                                 <div className="form-group">
