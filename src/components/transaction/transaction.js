@@ -74,7 +74,7 @@ class TransactionWithoutRouter extends React.Component {
                 (<div className="orders">
                    <div className="row">
                    <div className="col-xl-4">
-                            <h3>Recent Transactions</h3>
+                           
                         </div> {/* /.col-md-4 */}
                         <div className="col-xl-4">
                             

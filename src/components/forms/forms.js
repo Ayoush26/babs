@@ -113,7 +113,7 @@ class FormWithoutRouter extends React.Component {
                 this.setState({
                     isLoading: false
                 })
-                this.props.history.push('/dashboard');
+                this.props.history.push('/dashboard?marksheet=true');
             }).catch(err => console.log(err.response))
         })
     }
@@ -288,9 +288,9 @@ class FormWithoutRouter extends React.Component {
                                                         </div>
                                                     </div>
                                                     {this.state.sheet === 'marksheet' ? null : <div className="col-6">
-                                                        <label htmlFor="x_card_code" className="control-label mb-1">Rank</label>
+                                                        <label htmlFor="x_card_code" className="control-label mb-1">Attendance</label>
                                                         <div className="input-group">
-                                                            <input onChange={this.handleChange} id="x_card_code" name="rank" type="number" className="form-control cc-cvc" />
+                                                            <input onChange={this.handleChange} id="x_card_code" name="rank" type="text" className="form-control cc-cvc" />
                                                             <div className="input-group-addon">
                                                                 <span className="fa fa-question-circle fa-lg" data-toggle="popover" data-container="body" data-html="true" data-title="Security Code" data-content="<div class='text-center one-card'>The 3 digit code on back of the card..<div class='visa-mc-cvc-preview'></div></div>" data-trigger="hover" />
                                                             </div>

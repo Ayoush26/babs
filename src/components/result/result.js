@@ -9,7 +9,8 @@ class ResultWithoutRouter extends React.Component {
         super();
         this.state = {
             results: [],
-            isLoading: false
+            isLoading: false,
+            class: 'All'
         }
     }
 
@@ -45,6 +46,53 @@ class ResultWithoutRouter extends React.Component {
     handlePrint = (id) => {
         this.props.history.push(`/printResult/${id}`)
     }
+    handleClass = (value) => {
+        this.setState(()=>{
+            return{
+                isLoading: true
+            }
+        },async()=>{
+            try{
+                const {data} = await Axios.get(`${process.env.REACT_APP_HOST}/result/class/${value}`)
+                this.setState((prevState)=>{
+                    return{
+                        ...prevState,
+                        class: value,
+                        results: data,
+                        isLoading: false
+                    }
+                })
+            }catch(e){
+                console.log(e)
+            }
+        })
+    }
+    handleAll=()=>{
+        this.setState(prevState => {
+            return {
+                isLoading: !prevState.isLoading
+            }
+        }, () => {
+            Axios.get(`${process.env.REACT_APP_HOST}/result`)
+                .then(data => {
+                    const results = data.data.data;
+                    this.setState({
+                        results
+                    })
+
+                }).catch(err => {
+                    console.log(err.response)
+                }).finally(() => {
+                    this.setState((prevState) => {
+                        return {
+                            ...prevState,
+                            class: 'all',
+                            isLoading: !prevState.isLoading
+                        }
+                    })
+                })
+        })
+    }
     render() {
 
         const tableContent = this.state.results.map((result, index) => {
@@ -69,13 +117,14 @@ class ResultWithoutRouter extends React.Component {
             </tr>)
         })
 
+        let activebutton = 'btn-primary active';
         return (
             this.state.isLoading ?
                 <Loader></Loader> :
                 (<div className="orders">
                     <div className="row">
                         <div className="col-xl-4">
-                            <h3>Recent Results</h3>
+                           
                         </div> {/* /.col-md-4 */}
                         <div className="col-xl-4">
 
@@ -95,6 +144,25 @@ class ResultWithoutRouter extends React.Component {
                             </div>
                         </div> {/* /.col-md-4 */}
                     </div>
+
+                    <div className="row " style={{marginBottom:"10px"}}>
+                        <div className="col-lg-12 col-xl-12">
+                        <button onClick={this.handleAll} className={`btn m-1 ${this.state.class === 'All' ? activebutton : null}`}>All</button>
+                            <button onClick={this.handleClass.bind(this, 'Nursery')} className={`btn m-1 ${this.state.class === 'Nursery' ? activebutton : null}`}>Nursery</button>
+                            <button onClick={this.handleClass.bind(this, 'KG')} className={`btn m-1 ${this.state.class === 'KG' ? activebutton : null}`}>KG</button>
+                            <button onClick={this.handleClass.bind(this, '1')} className={`btn m-1 ${this.state.class === '1' ? activebutton : null}`}>1</button>
+                            <button onClick={this.handleClass.bind(this, '2')} className={`btn m-1 ${this.state.class === '2' ? activebutton : null}`}>2</button>
+                            <button onClick={this.handleClass.bind(this, '3')} className={`btn m-1 ${this.state.class === '3' ? activebutton : null}`}>3</button>
+                            <button onClick={this.handleClass.bind(this, '4')} className={`btn m-1 ${this.state.class === '4' ? activebutton : null}`}>4</button>
+                            <button onClick={this.handleClass.bind(this, '5')} className={`btn m-1 ${this.state.class === '5' ? activebutton : null}`}>5</button>
+                            <button onClick={this.handleClass.bind(this, '6')} className={`btn m-1 ${this.state.class === '6' ? activebutton : null}`}>6</button>
+                            <button onClick={this.handleClass.bind(this, '7')} className={`btn m-1 ${this.state.class === '7' ? activebutton : null}`}>7</button>
+                            <button onClick={this.handleClass.bind(this, '8')} className={`btn m-1 ${this.state.class === '8' ? activebutton : null}`}>8</button>
+                            <button onClick={this.handleClass.bind(this, '9')} className={`btn m-1 ${this.state.class === '9' ? activebutton : null}`}>9</button>
+                            <button onClick={this.handleClass.bind(this, '10')} className={`btn m-1 ${this.state.class === '10' ? activebutton : null}`}>10</button>
+                        </div>
+                        </div>
+
                     <div className="row">
                         <div className="col-xl-12">
                             <div className="card">

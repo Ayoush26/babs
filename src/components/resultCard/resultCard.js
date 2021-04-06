@@ -43,9 +43,9 @@ class ResultCardWithoutRouter extends React.Component {
             textAlign: 'left',
             textBaseline: 'bottom',
             globalAlpha: 0.17,
-            font: '14px Microsoft Yahei',
+            font: '18px Microsoft Yahei',
             rotateAngle: -0.26,
-            fillStyle: '#666'
+            fillStyle: '#07ad94'
         }
         return (<>
             <div className="wrapper">
@@ -146,8 +146,7 @@ class ResultCardWithoutRouter extends React.Component {
                                         <p className="mb-1 text-left">Total GPA Obtained: &nbsp;&nbsp;&nbsp;&nbsp; {this.state.result.AvgGPA}</p>
                                         <br />
                                         <p className="mb-1 text-left">Percentage: &nbsp;&nbsp;&nbsp;&nbsp;     {this.state.result.percentage}%</p><br />
-                                        <p className="mb-1 text-left">Attendance:</p><br />
-                                        <p className="mb-1 text-left">Rank: &nbsp;&nbsp;&nbsp;&nbsp;    {this.state.result.rank}</p>
+                                        <p className="mb-1 text-left">Attendance:   &nbsp;&nbsp;&nbsp;&nbsp;  {this.state.result.rank}</p><br />
 
                                     </div>
                                     <div className="col-md-6 sm-table">
