@@ -66,6 +66,7 @@ class FormWithoutRouter extends React.Component {
         }, async () => {
             if (this.state.sheet !== 'marksheet') {
                 try {
+                   if(this.state.Roll!==''){
                     const {data} = await Axios.get(`${process.env.REACT_APP_HOST}/marksheet/${this.state.class}/${this.state.Roll}`)
                     const marksInfo = data.data.marksInfo;
                     
@@ -75,9 +76,10 @@ class FormWithoutRouter extends React.Component {
                             Name: data.data.Name?data.data.Name:prevState.Name,
                             subjects: marksInfo
                         }
-                    },()=>{
-                       console.log(this.state.subjects) 
                     })
+                   }else{
+                       return
+                   }
                 }catch(e){
                     console.log(e)
                 }
