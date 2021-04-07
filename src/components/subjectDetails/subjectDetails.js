@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React from 'react';
+import { Loader } from '../common/loader/loader';
 import { SubjectTable } from '../subjectTable/subjectTable';
 
 export class SubjectDetails extends React.Component {
@@ -7,39 +8,54 @@ export class SubjectDetails extends React.Component {
         super();
         this.state = {
             class:'Nursery',
-            subjects:[]
+            subjects:[],
+            isLoading: false
         }
     }
 
     async componentDidMount(){
+       this.setState(()=>{
+           return{
+               isLoading: true
+           }
+       },async()=>{
         try{
             const data = await axios.get(`${process.env.REACT_APP_HOST}/subject/${this.state.class}`)
             const subjects = data.data.data
             this.setState((preState)=>{
                 return{
                     ...preState,
-                    subjects: subjects
+                    subjects: subjects,
+                    isLoading: false
                 }
             })
         }catch(e){
             console.log(e)
         }
+       })
     }
 
-    handleClick=async(value)=>{
-        try{
-            const data = await axios.get(`${process.env.REACT_APP_HOST}/subject/${value}`)
-            const subjects = data.data.data
-            this.setState((preState)=>{
-                return{
-                    ...preState,
-                    class: value,
-                    subjects: subjects
-                }
-            })
-        }catch(e){
-            console.log(e)
-        }
+    handleClick=(value)=>{
+        this.setState(()=>{
+            return{
+                isLoading: true
+            }
+        },async()=>{
+            try{
+                const data = await axios.get(`${process.env.REACT_APP_HOST}/subject/${value}`)
+                const subjects = data.data.data
+                this.setState((preState)=>{
+                    return{
+                        ...preState,
+                        class: value,
+                        subjects: subjects,
+                        isLoading: false
+                    }
+                })
+            }catch(e){
+                console.log(e)
+            }
+        })
     }
 
     render() {
@@ -58,8 +74,7 @@ export class SubjectDetails extends React.Component {
                 <button onClick = {this.handleClick.bind(this,'8')} className={`btn m-1 ${this.state.class==='8'?activebutton:null}`}>8</button>
                 <button onClick = {this.handleClick.bind(this,'9')} className={`btn m-1 ${this.state.class==='9'?activebutton:null}`}>9</button>
                 <button onClick = {this.handleClick.bind(this,'10')} className={`btn m-1 ${this.state.class==='10'?activebutton:null}`}>10</button>
-                
-                <SubjectTable subjects={this.state.subjects} class={this.state.class} click={this.handleClick} ></SubjectTable>
+                {this.state.isLoading?<Loader></Loader>: <SubjectTable subjects={this.state.subjects} class={this.state.class} click={this.handleClick} ></SubjectTable>}
             </div>
         )
     }
