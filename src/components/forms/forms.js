@@ -107,11 +107,11 @@ class FormWithoutRouter extends React.Component {
                 isLoading: true
             }
         }, () => {
-            Axios.post(`${process.env.REACT_APP_HOST}/sheet`, this.state, {
+            Axios.post(`${process.env.REACT_APP_HOST}/marksheet`, this.state, {
                 headers: { 'Content-Type': 'application/json' },
                 responseType: 'json'
             }).then(data => {
-                notify.success(data.data.msg)
+                notify.success('Succesfully added to the marksheet')
                 this.setState({
                     isLoading: false
                 })

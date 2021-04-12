@@ -3,14 +3,25 @@ import Axios from 'axios';
 import { Loader } from '../common/loader/loader';
 import { withRouter } from 'react-router-dom';
 import { notify } from '../../util/notify';
+import Modal from 'react-modal';
 
 class MarksheetWithoutRouter extends React.Component {
     constructor() {
         super();
         this.state = {
-            results: [],
+            results: [{
+                marksInfo: {}
+            }],
             isLoading: false,
-            class: 'Nursery'
+            class: 'Nursery',
+            subjects: [{
+                Name: ''
+            }],
+            modalIsOpen: false,
+            currentResult: {
+                marksInfo: {}
+            },
+            fullMarks: {}
         }
     }
 
@@ -21,10 +32,19 @@ class MarksheetWithoutRouter extends React.Component {
             }
         }, () => {
             Axios.get(`${process.env.REACT_APP_HOST}/marksheet/${this.state.class}`)
-                .then(data => {
+                .then(async (data) => {
+                    const subjectData = await Axios.get(`${process.env.REACT_APP_HOST}/subject/${this.state.class}`)
+                    const subjects = subjectData.data.data
+                    let newFullMarks = {}
+                    subjects.map((subject) => {
+
+                        newFullMarks[subject.Name] = subject.FullMarks
+                    })
                     const results = data.data.data;
                     this.setState({
-                        results
+                        results,
+                        subjects,
+                        fullMarks: newFullMarks
                     })
 
                 }).catch(err => {
@@ -43,21 +63,22 @@ class MarksheetWithoutRouter extends React.Component {
 
     handlePrint = async (id) => {
         try {
+
             const check = window.confirm('Are you sure you want to delete?')
             if (check) {
                 const prevClass = this.state.class
                 await Axios.delete(`${process.env.REACT_APP_HOST}/marksheet/delete/${id}`)
                 notify.success('Succesfully Deleted')
-                const {data} = await Axios.get(`${process.env.REACT_APP_HOST}/marksheet/${prevClass}`);
+                const { data } = await Axios.get(`${process.env.REACT_APP_HOST}/marksheet/${prevClass}`);
                 const results = data.data;
-                this.setState((prevState)=>{
+                this.setState((prevState) => {
                     return {
                         ...prevState,
                         results,
                         class: prevClass
                     }
                 })
-                
+
             } else {
                 return
             }
@@ -72,13 +93,22 @@ class MarksheetWithoutRouter extends React.Component {
             }
         }, async () => {
             try {
+                const subjectData = await Axios.get(`${process.env.REACT_APP_HOST}/subject/${value}`)
+                const subjects = subjectData.data.data
                 const { data } = await Axios.get(`${process.env.REACT_APP_HOST}/marksheet/${value}`)
                 const results = data.data
+                let newFullMarks = {}
+                subjects.map((subject) => {
+
+                    newFullMarks[subject.Name] = subject.FullMarks
+                })
                 this.setState((preState) => {
                     return {
                         ...preState,
                         class: value,
                         results,
+                        subjects,
+                        fullMarks: newFullMarks,
                         isLoading: false
                     }
                 })
@@ -88,19 +118,139 @@ class MarksheetWithoutRouter extends React.Component {
             }
         })
     }
+    handleEdit = async () => {
+        try {
+            const editedData = this.state.currentResult;
+            editedData.fullMarks = this.state.fullMarks;
+            await Axios.put(`${process.env.REACT_APP_HOST}/marksheet/edit/${editedData._id}`, editedData, {
+                headers: { 'Content-Type': 'application/json' },
+                responseType: 'json'
+            });
+            notify.success('Succefully Updated')
+            const { data } = await Axios.get(`${process.env.REACT_APP_HOST}/marksheet/${this.state.class}`)
+            const results = data.data
+            this.setState((preState) => {
+                return {
+                    ...preState,
+                    modalIsOpen: false,
+                    results
+                }
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    openModal = (index) => {
+        this.setState((preState) => {
+            return {
+                ...preState,
+                modalIsOpen: true,
+                currentResult: {
+                    ...preState.results[index]
+                }
+            }
 
+        })
+    }
+    closeModal = () => {
+        this.setState((preState) => {
+            return {
+                ...preState,
+                modalIsOpen: false
+            }
+        })
+    }
+    handleChange = (e) => {
+        const { name, value } = e.target;
+        this.setState(preState => {
+            return {
+                ...preState,
+                currentResult: {
+                    ...preState.currentResult,
+                    [name]: value,
+                    marksInfo: {
+                        ...preState.currentResult.marksInfo
+                    }
+                }
+            }
+        })
+    }
+    handleMarks = e => {
+        const { name, value } = e.target;
+        this.setState(preState => {
+            return {
+                ...preState,
+                currentResult: {
+                    ...preState.currentResult,
+                    marksInfo: {
+                        ...preState.currentResult.marksInfo,
+                        [name]: value
+                    }
+                }
+            }
+        })
+    }
+
+    handleClick = ()=> {
+        
+       this.setState(preState=>{
+           return{
+               ...preState,
+               isLoading: true
+           }
+       },()=>{
+        const results = this.state.results
+        results.map((result,index)=>{
+            const data = result;
+            data.fullMarks= this.state.fullMarks;
+            data.Rank = index+1
+           setTimeout(async()=>{
+            const response = await Axios.post(`${process.env.REACT_APP_HOST}/sheet`,data,{
+                headers: { 'Content-Type': 'application/json' },
+                responseType: 'json'
+
+            })
+            console.log(response)
+           },2000)
+            
+        })
+        
+       })
+    }
     render() {
+
+        console.log(this.state)
+        const section = this.state.subjects.length/3;
+        const customStyles = {
+            content: {
+                top: '50%',
+                left: '50%',
+                right: 'auto',
+                bottom: 'auto',
+                marginRight: '20%',
+                transform: 'translate(-50%, -50%)'
+            }
+        };
+
+
+        const tableHeadContent = this.state.subjects.map(subject => {
+            return <th key={subject._id}>{subject.Name}</th>
+        })
+
 
         const tableContent = this.state.results.map((result, index) => {
             return (<tr key={result._id}>
-                <td className="serial">{index + 1}</td>
-
+                <td>{index + 1}</td>
                 <td>{result.Name} </td>
-                <td>{result.class}</td>
                 <td>{result.Roll}</td>
+                {this.state.subjects.map(({ Name, _id },) => {
+                    return <td key={_id} >{result.marksInfo[Name]}</td>
+                })}
 
+                <td>{result.percentage}%</td>
+                <td >
 
-                <td>
+                    <button onClick={this.openModal.bind(this, index)} className="btn btn-info m-1">Edit</button>
                     <button onClick={this.handlePrint.bind(this, result._id)} className="btn btn-danger">Delete</button>
                 </td>
 
@@ -152,23 +302,23 @@ class MarksheetWithoutRouter extends React.Component {
                             </div>
                         </div>
                         <div className="row">
+                            
                             <div className="col-xl-12">
                                 <div className="card">
                                     <div className="card-body">
                                         <h4 className="box-title">Marksheet</h4>
+                                        <button onClick={this.handleClick} className={`btn btn-success`} style={{ float: 'right' }}>Create Marksheet</button>
                                     </div>
                                     <div className="card-body--">
                                         <div className="table-stats order-table ov-h">
                                             <table className="table ">
                                                 <thead>
                                                     <tr>
-                                                        <th className="serial">SN</th>
-
-
+                                                        <th>Rank</th>
                                                         <th>Name</th>
-                                                        <th>class</th>
-                                                        <th>Roll No</th>
-
+                                                        <th>Roll</th>
+                                                        {tableHeadContent}
+                                                        <th>Percent</th>
                                                         <th>More</th>
                                                     </tr>
                                                 </thead>
@@ -182,7 +332,40 @@ class MarksheetWithoutRouter extends React.Component {
                             </div>  {/* /.col-lg-8 */}
 
                         </div>
-                    </div></>)
+                    </div>
+                    <Modal
+                        isOpen={this.state.modalIsOpen}
+                        onRequestClose={this.closeModal}
+                        style={customStyles}
+                        contentLabel="Edit Marksheet"
+                    >
+
+                        {/* <h2 ref={_subtitle => (subtitle = _subtitle)}>Hello</h2> */}
+
+                        <form className="form-group">
+                            <div className="row">
+                                <div className="col-8">
+                                    <label><h5>Name:</h5></label>
+                                    <input name="Name" onChange={this.handleChange} className="form-control" value={this.state.currentResult.Name} ></input>
+                                </div>
+                                <div className="col-4">
+                                    <label><h5 className="pt-1">Roll No:</h5></label>
+                                    <input type="text" onChange={this.handleChange} name="Roll" value={this.state.currentResult.Roll} className="form-control" ></input>
+                                </div>
+                            </div>
+                            <div className="row">
+                            {this.state.subjects.map(subject => {
+                                return <div className="col-4">
+                                    <label><h5 className="pt-1">{subject.Name}</h5></label>
+                                    <input type="text" onChange={this.handleMarks} name={subject.Name} value={this.state.currentResult.marksInfo[subject.Name]} className="form-control" ></input></div>
+                                
+                            })}
+                            </div>
+                        </form>
+                        <button className="btn btn-warning" onClick={this.handleEdit}>Save Changes</button>
+                        <button className="btn btn-danger m-1" onClick={this.closeModal}>Close</button>
+                    </Modal>
+                </>)
         )
     }
 }

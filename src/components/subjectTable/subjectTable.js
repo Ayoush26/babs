@@ -75,7 +75,7 @@ class SubjectTableWithoutRouter extends React.Component {
 
     edit = async () => {
         try {
-            const { data } = await axios.post(`${process.env.REACT_APP_HOST}/subject/id/${this.state.subjectId}`, this.state.subject, {
+            const { data } = await axios.put(`${process.env.REACT_APP_HOST}/subject/id/${this.state.subjectId}`, this.state.subject, {
                 headers: { 'Content-Type': 'application/json' },
                 responseType: 'json'
             })
@@ -173,7 +173,7 @@ class SubjectTableWithoutRouter extends React.Component {
                 }} className="btn btn-danger">X</button>
             </td>
         </tr>
-        console.log(this.state)
+
         return (
             this.state.isLoading ?
                 <Loader></Loader> :

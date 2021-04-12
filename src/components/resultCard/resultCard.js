@@ -59,7 +59,7 @@ class ResultCardWithoutRouter extends React.Component {
                         <div className="col-12">
                             <div className="card">
                                 <div className="card-body p-0">
-                                    <h1 className="text-center p-2">BUDHHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h1>
+                                    <h1 className="text-center p-2">BUDDHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h1>
                                     <h2 className="text-center p-2"> DHARAN-9, DIP PATH, SUNSARI, KOSHI, NEPAL</h2>
                                     <h2 className="text-center p-2">{this.state.result.term} TERM EXAM 2077 BS</h2>
                                     <div className="row p-2">
