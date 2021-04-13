@@ -6,6 +6,7 @@ import { Login } from './components/login/login';
 import { PrintBill } from './components/printBill/printBill';
 import { ResultCard } from './components/resultCard/resultCard';
 import { resultForm } from './components/resultForm/resultForm';
+import { SheetTable } from './components/sheetTable/sheetTable';
 import { SignTable } from './components/signTable/signTable';
 import { Subjects } from './components/subjects/subjects';
 import { ViewBill } from './components/viewBill/viewBill';
@@ -25,6 +26,7 @@ export const AppRouting = () => {
             <Route exact path='/printResult/:id' component={ResultCard}></Route>
             <Route exact path='/subjects' component={Subjects}></Route>
             <Route exact path='/table' component={SignTable}></Route>
+            <Route exact path='/sheet' component={SheetTable}></Route>
         </Router>
 
     )

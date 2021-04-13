@@ -193,34 +193,11 @@ class MarksheetWithoutRouter extends React.Component {
 
     handleClick = ()=> {
         
-       this.setState(preState=>{
-           return{
-               ...preState,
-               isLoading: true
-           }
-       },()=>{
-        const results = this.state.results
-        results.map((result,index)=>{
-            const data = result;
-            data.fullMarks= this.state.fullMarks;
-            data.Rank = index+1
-           setTimeout(async()=>{
-            const response = await Axios.post(`${process.env.REACT_APP_HOST}/sheet`,data,{
-                headers: { 'Content-Type': 'application/json' },
-                responseType: 'json'
-
-            })
-            console.log(response)
-           },2000)
-            
-        })
-        
-       })
+        this.props.history.push(`/sheet?class=${this.state.class}`)
     }
     render() {
 
-        console.log(this.state)
-        const section = this.state.subjects.length/3;
+
         const customStyles = {
             content: {
                 top: '50%',
@@ -307,7 +284,7 @@ class MarksheetWithoutRouter extends React.Component {
                                 <div className="card">
                                     <div className="card-body">
                                         <h4 className="box-title">Marksheet</h4>
-                                        <button onClick={this.handleClick} className={`btn btn-success`} style={{ float: 'right' }}>Create Marksheet</button>
+                                        <button onClick={this.handleClick} className={`btn btn-success`} style={{ float: 'right' }}>View Marksheet</button>
                                     </div>
                                     <div className="card-body--">
                                         <div className="table-stats order-table ov-h">
