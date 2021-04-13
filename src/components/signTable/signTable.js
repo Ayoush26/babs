@@ -18,11 +18,11 @@ export class SignTable extends Component {
                 class : this.props.location.search.split("=")[1]
             }
         },async()=>{
-            const {data}= await axios.get(`${process.env.REACT_APP_HOST}/marksheet/${this.state.class}`)
+            const {data}= await axios.get(`${process.env.REACT_APP_HOST}/result/class/${this.state.class}`)
             this.setState((preState)=>{
                 return{
                     ...preState,
-                    results: data.data
+                    results: data
                 }
             })
         })
@@ -32,17 +32,17 @@ export class SignTable extends Component {
         console.log(this.state)
         const tableContent = this.state.results.map(result=>{
             return <tr key={result._id}>
-            <td>{result.Roll}</td>
-            <td>{result.Name}</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td className="tableDimension">{result.Roll}</td>
+            <td className="tableDimension">{result.data.Name}</td>
+            <td className="tableDimension"></td>
+            <td className="tableDimension"></td>
+            <td className="tableDimension" ></td>
         </tr>
         })
 
         return (
             <>
-                <div style={{width:"70%"}}>
+                <div style={{width:"80%"}}>
                     <div className="card-body p-0">
                                         <h3 className="text-center p-2">BUDDHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h3>
                                         <h5 className="text-center p-2"> DHARAN-9, DIP PATH, SUNSARI, KOSHI, NEPAL</h5>
@@ -51,24 +51,22 @@ export class SignTable extends Component {
                                             <div className="col-md-5 text-center">
                                                 <img src={logo} alt="Logo" />
                                             </div>
-                                            <div className="col-md-7 text-left">
-                                                <h2>Class {this.state.class}</h2>
-                                            </div>
+                                           
                                         </div>
                     </div>
                 </div>
                 <div>
-                    <h4 style={{margin:"10px",paddingLeft:"50px"}}>Class {this.state.class}</h4>
+                    <h4 style={{margin:"10px",paddingLeft:"50px"}}>Class: {this.state.class}</h4>
                 </div>
                 <div style={{ margin: "20px", padding: "40px" }}>    
-                    <table style={{width:"70%",border:"1px solid black"}}>
+                    <table style={{width:"80%",border:"1px solid black"}}>
                        <thead>
                        <tr>
-                            <th>Roll</th>
-                            <th>Name</th>
-                            <th>Parent's Name</th>
-                            <th>Mobile Number</th>
-                            <th>Signature</th>
+                            <th className="tableHead">Roll</th>
+                            <th className="tableHead" >Name</th>
+                            <th className="tableHead">Parent's Name  &nbsp; &nbsp; &nbsp; &nbsp;</th>
+                            <th className="tableHead">Mobile No.</th>
+                            <th className="tableHead">Sign &nbsp; &nbsp;</th>
                         </tr>
                        </thead>
                        <tbody>

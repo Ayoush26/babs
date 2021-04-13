@@ -4,20 +4,7 @@ import Axios from 'axios';
 import { notify } from '../../util/notify';
 import { withRouter } from 'react-router-dom';
 
-// const defaultForm={
-//     Roll: '',
-//     Name: '',
-//     class: '7',
-//     Wonder: '',
-//     EPH: '',
-//     English: '',
-//     Nepali: '',
-//     Science: '',
-//     Social: '',
-//     Math: '',
-//     Grammar: '',
-//     Account: ''
-// }
+
 
 class FormWithoutRouter extends React.Component {
     constructor() {
@@ -64,7 +51,7 @@ class FormWithoutRouter extends React.Component {
                 [name]: value
             }
         }, async () => {
-            if (this.state.sheet) {
+            if (this.state.sheet!=='marksheet') {
                 try {
                    if(this.state.Roll!==''){
                     const {data} = await Axios.get(`${process.env.REACT_APP_HOST}/marksheet/${this.state.class}/${this.state.Roll}`)
@@ -259,16 +246,6 @@ class FormWithoutRouter extends React.Component {
                                                     </div>
                                                 </div> : null}
 
-                                                <div className="form-group has-success">
-                                                    <label htmlFor="cc-name" className="control-label mb-1">Name</label>
-                                                    <input defaultValue={this.state.Name} id="cc-name" onChange={this.handleChange} name="Name" type="text" className="form-control cc-name valid" data-val="true" data-val-required="Please enter the name on card" autoComplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name" />
-                                                    <span className="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true" />
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="cc-number" className="control-label mb-1">Roll number</label>
-                                                    <input id="cc-number" onChange={this.handleChange} name="Roll" type="number" className="form-control cc-number identified visa" defaultValue data-val="true" data-val-required="Please enter the card number" data-val-cc-number="Please enter a valid card number" />
-                                                    <span className="help-block" data-valmsg-for="cc-number" data-valmsg-replace="true" />
-                                                </div>
                                                 <div className="row">
                                                     <div className="col-6">
                                                         <div className="form-group">
@@ -289,6 +266,21 @@ class FormWithoutRouter extends React.Component {
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div className="form-group col-6">
+                                                    <label htmlFor="cc-number" className="control-label mb-1">Roll number</label>
+                                                    <input id="cc-number" onChange={this.handleChange} name="Roll" type="number" className="form-control cc-number identified visa" defaultValue data-val="true" data-val-required="Please enter the card number" data-val-cc-number="Please enter a valid card number" />
+                                                    <span className="help-block" data-valmsg-for="cc-number" data-valmsg-replace="true" />
+                                                </div>
+                                                
+                                                </div>
+                                                
+                                                <div className="row">
+                                                <div className={this.state.sheet==='marksheet'?`form-group has-success col-12`:`form-group has-success col-6`}>
+                                                    <label htmlFor="cc-name" className="control-label mb-1">Name</label>
+                                                    <input defaultValue={this.state.Name} id="cc-name" onChange={this.handleChange} name="Name" type="text" className="form-control cc-name valid" data-val="true" data-val-required="Please enter the name on card" autoComplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name" />
+                                                    <span className="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true" />
+                                                </div>
+                                              
                                                     {this.state.sheet === 'marksheet' ? null : <div className="col-6">
                                                         <label htmlFor="x_card_code" className="control-label mb-1">Attendance</label>
                                                         <div className="input-group">
