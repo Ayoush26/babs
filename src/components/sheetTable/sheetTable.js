@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { Component } from 'react';
 import './sheetTable.css';
 import logo from './../../images/logo.png';
-
+import grade from './../../util/grade';
 export class SheetTable extends Component {
     constructor() {
         super();
@@ -47,15 +47,15 @@ export class SheetTable extends Component {
         console.log(this.state)
         const tableContent = this.state.results.map((result,index)=> {
             return <tr key={result._id}>
-                <td className="tableDimension">{index+1}</td>
-                <td className="tableDimension">{result.Name}</td>
                 <td className="tableDimension">{result.Roll}</td>
+                <td className="tableDimension">{result.Name}</td>
+
                 {this.state.subjects.map((subject, index) => {
 
                     return <td className="tableDimension" key={index}>{result.marksInfo[subject]}</td>
                 })}
                 <td className="tableDimension">{result.percentage}</td>
-
+                <td className="tableDimension">{grade(result.percentage)}</td>
             </tr>
         })
 
@@ -63,8 +63,9 @@ export class SheetTable extends Component {
             <>
                 <div style={{ width: "100%" }}>
                     <div className="card-body p-0">
-                        <h3 className="text-center p-2">BUDDHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h3>
-                        <h5 className="text-center p-2"> DHARAN-9, DIP PATH, SUNSARI, KOSHI, NEPAL</h5>
+                        <h3 className="text-center p-2 font-weight-bold">BUDDHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h3>
+                        <h5 className="text-center p-2 font-weight-bold"> DHARAN-9, DIP PATH, SUNSARI, KOSHI, NEPAL</h5>
+                        <h4 className="text-center p-2 font-weight-bold" >RESULT SHEET OF FINAL EXAM 2077 BS</h4>
 
                         <div className="row p-2">
                             <div className="col-md-4 text-center">
@@ -87,13 +88,14 @@ export class SheetTable extends Component {
                     <table style={{ width: "100%", border: "1px solid black" }}>
                         <thead>
                             <tr>
-                                <th className="tableHead">Rank</th>
-                                <th className="tableHead" >Name</th>
                                 <th className="tableHead">Roll</th>
+                                <th className="tableHead" >Name</th>
+                                
                                 {this.state.subjects.map((subject, index) => {
                                     return <th key={index} className="tableHead">{subject === 'Handwriting' ? 'HW' : subject}</th>
                                 })}
                                 <th className="tableHead">%</th>
+                                <th className="tableHead">Grade</th>
                             </tr>
                         </thead>
                         <tbody>

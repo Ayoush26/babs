@@ -49,10 +49,10 @@ class ResultCardWithoutRouter extends React.Component {
         }
         return (<>
             <div className="wrapper">
-                <ReactWaterMark waterMarkText={text}
+                {/* <ReactWaterMark waterMarkText={text}
                     openSecurityDefense
                     securityAlarm={beginAlarm}
-                    options={options}>
+                    options={options}> */}
 
 
                     <div className="row">
@@ -61,7 +61,8 @@ class ResultCardWithoutRouter extends React.Component {
                                 <div className="card-body p-0">
                                     <h1 className="text-center p-2">BUDDHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h1>
                                     <h2 className="text-center p-2"> DHARAN-9, DIP PATH, SUNSARI, KOSHI, NEPAL</h2>
-                                    <h2 className="text-center p-2">{this.state.result.term} TERM EXAM 2077 BS</h2>
+                                    <h2 className="text-center p-2">FINAL TERM EXAM 2077 BS</h2>
+                                    {/* {this.state.result.term}   */}
                                     <div className="row p-2">
                                         <div className="col-md-5 text-center">
                                             <img src={logo} alt="Logo" />
@@ -218,16 +219,16 @@ class ResultCardWithoutRouter extends React.Component {
 
                                     </div>
                                 </div>
-                                <div className="row">
+                                <div className="row " style={{marginTop:'30px'}}>
                                     <div className="col-md-1"></div>
                                     <div className="col-md-1"></div>
                                     <div className="col-md-2 bt">
-                                        <p className="text-center">School's Seal</p>
+                                        <p className="text-center">Principal</p>
                                     </div>
                                     <div className="col-md-1"></div>
 
                                     <div className="col-md-2 bt">
-                                        <p className="text-center">Principal</p>
+                                        <p className="text-center">School's Seal</p>
                                     </div>
                                     <div className="col-md-1"></div>
                                     <div className="col-md-2 bt">
@@ -240,7 +241,7 @@ class ResultCardWithoutRouter extends React.Component {
                         </div>
                     </div>
 
-                </ReactWaterMark>
+                {/* </ReactWaterMark> */}
             </div>
         </>)
     }

@@ -217,9 +217,9 @@ class MarksheetWithoutRouter extends React.Component {
 
         const tableContent = this.state.results.map((result, index) => {
             return (<tr key={result._id}>
-                <td>{index + 1}</td>
-                <td>{result.Name} </td>
                 <td>{result.Roll}</td>
+                <td>{result.Name} </td>
+                
                 {this.state.subjects.map(({ Name, _id },) => {
                     return <td key={_id} >{result.marksInfo[Name]}</td>
                 })}
@@ -291,9 +291,9 @@ class MarksheetWithoutRouter extends React.Component {
                                             <table className="table ">
                                                 <thead>
                                                     <tr>
-                                                        <th>Rank</th>
-                                                        <th>Name</th>
                                                         <th>Roll</th>
+                                                        <th>Name</th>
+                                                     
                                                         {tableHeadContent}
                                                         <th>Percent</th>
                                                         <th>More</th>
