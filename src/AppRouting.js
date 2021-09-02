@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { dashboard } from './components/dashboard/dashboard';
+import { GPATable } from './components/GPATable/GPATable';
 import { InvoiceForm } from './components/invoiceForm/invoiceForm';
 import { Login } from './components/login/login';
 import { PrintBill } from './components/printBill/printBill';
@@ -27,6 +28,7 @@ export const AppRouting = () => {
             <Route exact path='/subjects' component={Subjects}></Route>
             <Route exact path='/table' component={SignTable}></Route>
             <Route exact path='/sheet' component={SheetTable}></Route>
+            <Route exact path='/gpatable' component={GPATable}></Route>
         </Router>
 
     )

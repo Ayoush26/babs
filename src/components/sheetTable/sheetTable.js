@@ -64,8 +64,8 @@ export class SheetTable extends Component {
                 <div style={{ width: "100%" }}>
                     <div className="card-body p-0">
                         <h3 className="text-center p-2 font-weight-bold">BUDDHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h3>
-                        <h5 className="text-center p-2 font-weight-bold"> DHARAN-9, DIP PATH, SUNSARI, KOSHI, NEPAL</h5>
-                        <h4 className="text-center p-2 font-weight-bold" >RESULT SHEET OF FINAL EXAM 2077 BS</h4>
+                        <h5 className="text-center p-2 font-weight-bold"> DIP PATH, DHARAN-9, SUNSARI, NEPAL</h5>
+                        <h4 className="text-center p-2 font-weight-bold" >MARK SHEET OF FIRST TERM EXAM, 2078 BS</h4>
 
                         <div className="row p-2">
                             <div className="col-md-4 text-center">
@@ -102,7 +102,21 @@ export class SheetTable extends Component {
                             {tableContent}
                         </tbody>
 
-                    </table>
+
+                    </table><br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                                <br>
+                                </br>
+                      <div style={{float:'right', marginRight:'70px',marginTop:'50px',borderTop:'1px solid black',fontWeight:'bold'}}>
+                                <h5 >Principal</h5>
+                        </div>
+                        <div style={{float:'left', marginRight:'70px',marginTop:'50px',borderTop:'1px solid black',fontWeight:'bold'}}>
+                                <h5>Class Teacher</h5>
+                        </div>
                 </div>
             </>
         )

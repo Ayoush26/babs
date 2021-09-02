@@ -1,8 +1,26 @@
-.wrapper{
-    margin : 20px 40px 20px 40px;
-    border: 2px solid black;
-    padding-top: 20px;
+
+
+.main{
+    display: flex;
 }
+
+.div1{
+    flex:6
+}
+
+.div2{
+    flex:6
+}
+
+.wrapper{
+
+    margin : 12px 0 12px 0;
+    border: 2px solid black;
+    padding-top: 12px;
+   
+}
+
+
 
 .wrapper h1 { font-family: Copperplate, "Copperplate Gothic Light", fantasy; font-size: 24px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; }
 
@@ -25,11 +43,13 @@
 .wrapper .border {
     border: 1px solid black!important;
 }
-.wrapper .table.small td{
+.wrapper .table.large td{
   border:none
 }
-
-.wrapper .table.small thead th{
+.table.large{
+    font:40px;
+}
+.wrapper .table.large thead th{
     border: none
 }
 
@@ -40,3 +60,4 @@
 .wrapper .bt{
     border-top: 1px solid black;
 }
+
