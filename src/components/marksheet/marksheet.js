@@ -19,7 +19,8 @@ class MarksheetWithoutRouter extends React.Component {
             }],
             modalIsOpen: false,
             currentResult: {
-                marksInfo: {}
+                marksInfo: {},
+                index: ''
             },
             fullMarks: {}
         }
@@ -195,9 +196,15 @@ class MarksheetWithoutRouter extends React.Component {
         
         this.props.history.push(`/sheet?class=${this.state.class}`)
     }
+
+    
+    handleDoublePrint = ()=> {
+        
+        this.props.history.push(`/gpatable?&${this.state.class}&${this.state.currentResult.index}`)
+    }
     render() {
 
-
+        console.log(this.state)
         const customStyles = {
             content: {
                 top: '50%',
@@ -226,8 +233,9 @@ class MarksheetWithoutRouter extends React.Component {
 
                 <td>{result.percentage}%</td>
                 <td >
-
+                   
                     <button onClick={this.openModal.bind(this, index)} className="btn btn-info m-1">Edit</button>
+                   
                     <button onClick={this.handlePrint.bind(this, result._id)} className="btn btn-danger">Delete</button>
                 </td>
 
@@ -283,7 +291,9 @@ class MarksheetWithoutRouter extends React.Component {
                             <div className="col-xl-12">
                                 <div className="card">
                                     <div className="card-body">
-                                        <h4 className="box-title">Marksheet</h4>
+                                        
+                                        <input type="number" name="index" onChange={this.handleChange} class="form-control"  style={{maxWidth:'7%'}}/>
+                                        <button onClick={this.handleDoublePrint} className="btn btn-info m-1">Print</button>
                                         <button onClick={this.handleClick} className={`btn btn-success`} style={{ float: 'right' }}>View Marksheet</button>
                                     </div>
                                     <div className="card-body--">

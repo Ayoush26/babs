@@ -163,7 +163,7 @@ class SubjectTableWithoutRouter extends React.Component {
         const addRow = <tr>
             <td>#</td>
             <td><input onChange={this.changeHandler} type="text" name="name"></input></td>
-            <td><select onChange={this.changeHandler} name="fullMarks"><option value={50}>50</option><option value={25}>25</option></select></td>
+            <td><select onChange={this.changeHandler} name="fullMarks"><option value={100}>100</option><option value={50}>50</option></select></td>
             <td>
                 <button onClick={this.addSubject} className="btn btn-warning m-1">Save Changes</button>
                 <button onClick={() => {

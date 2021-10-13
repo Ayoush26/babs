@@ -45,22 +45,22 @@ export class RightPanel extends React.Component {
     let activebutton = 'btn-primary active';
     let component = this.state.component;
     switch (component) {
-      case 'result':
-        component = (<Result></Result>)
-        break;
-      case 'marksheet':
-        component = (<Marksheet></Marksheet>)
-        break;
+      // case 'result':
+      //   component = (<Result></Result>)
+      //   break;
+      // case 'transaction':
+      //   component = (<Transaction></Transaction>)
+      //   break;
       default:
-        component = (<Transaction></Transaction>)
+        component = (<Marksheet></Marksheet>)
     }
     return (
       <div id="right-panel" className="right-panel">
         <Header sidebar={this.props.changeSidebar} ></Header>
         <div className="content">
-          <button onClick={this.handleTransaction} className={`btn m-1 ${this.state.component === 'transaction' ? activebutton : null}`} >Transactions</button>
-          <button onClick={this.handleResult} className={`btn m-1 ${this.state.component === 'result' ? activebutton : null}`}>Result</button>
-          <button onClick={this.handleMarksheet} className={`btn m-1 ${this.state.component === 'marksheet' ? activebutton : null}`}>Marksheet</button>
+          {/* <button onClick={this.handleTransaction} className={`btn m-1 ${this.state.component === 'transaction' ? activebutton : null}`} >Transactions</button>
+          <button onClick={this.handleResult} className={`btn m-1 ${this.state.component === 'result' ? activebutton : null}`}>Result</button> */}
+          <button onClick={this.handleMarksheet} className={`btn m-1 ${ activebutton}`}>Marksheet</button>
           {component}
         </div>
       </div>
