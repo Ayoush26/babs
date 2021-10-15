@@ -270,6 +270,8 @@ export class GPATable extends Component {
                     subjects: subjectName,
                     FullMarks
                 }
+            },()=>{
+                window.print()
             })
         })
     }
@@ -305,19 +307,23 @@ export class GPATable extends Component {
         let total1 = 0;
         let totalGPA1=0;
         let totalMarks=0;
+        let count = 0;
         const tableContent1 = this.state.subjects.map((subject, index) => {
-            total1 = total1 + Number(this.state.results[roll-1].marksInfo[subject])
-            totalGPA1 = totalGPA1 + Number(mpg(this.state.results[roll-1].marksInfo[subject],this.state.FullMarks[subject]).gradePoint)
-            totalMarks = totalMarks + Number(this.state.FullMarks[subject])
+            if(this.state.FullMarks[subject]!=='Grade'){
+                total1 = total1 + Number(this.state.results[roll-1].marksInfo[subject])
+                totalGPA1 = totalGPA1 + Number(mpg(this.state.results[roll-1].marksInfo[subject],this.state.FullMarks[subject]).gradePoint)
+                totalMarks = totalMarks + Number(this.state.FullMarks[subject])
+                count++;
+            } 
             return <tr key={index}>
 
                 <td style={contentCss} key={index} className="text-center">{subject === ' सेरोफेरो' ? 'Serofero' : subject}</td>
                 <td style={contentCss} key={index} className="text-center">{this.state.FullMarks[subject]}</td>
-                <td style={contentCss} key={index} className="text-center">{this.state.results[roll - 1].marksInfo[subject]}</td>
+                <td style={contentCss} key={index} className="text-center">{this.state.FullMarks[subject]==='Grade'?'':this.state.results[roll-1].marksInfo[subject]}</td>
                 <td style={contentCss} key={index} className="text-center">{mpg(this.state.results[roll-1].marksInfo[subject],this.state.FullMarks[subject]).gradePoint}</td>
                 {/* <td key={index} className="text-center">{this.state.results.marksInfo[subject]}</td> */}
                 {/* <td key={index} className="text-center">{subject==='Health'||subject==='Moral'?2:4}</td> */}
-                <td style={contentCss} key={index} className="text-center">{mpg(this.state.results[roll-1].marksInfo[subject],this.state.FullMarks[subject]).grade}</td>
+                <td style={contentCss} key={index} className="text-center">{this.state.FullMarks[subject]==='Grade'?this.state.results[roll-1].marksInfo[subject]:mpg(this.state.results[roll-1].marksInfo[subject],this.state.FullMarks[subject]).grade}</td>
                 {/* <td key={index} className="text-center">{subject==='Health'||subject==='Moral'?this.state.results.marksInfo[subject]/12.5:this.state.results.marksInfo[subject]/25}</td>
                  <td key={index} className="text-center">{subject==='Health'||subject==='Moral'?(this.state.results.marksInfo[subject]/12.5)*2:(this.state.results.marksInfo[subject]/25)*4}</td> */}
             </tr>
@@ -325,17 +331,21 @@ export class GPATable extends Component {
         let total2 = 0;
         let totalGPA2=0;
         const tableContent2 = this.state.subjects.map((subject, index) => {
-            total2 = total2 + Number(this.state.results[roll].marksInfo[subject])
-            totalGPA2 = totalGPA2 + Number(mpg(this.state.results[roll].marksInfo[subject],this.state.FullMarks[subject]).gradePoint);
+            if(this.state.FullMarks[subject]!=='Grade'){
+                total2 = total2 + Number(this.state.results[roll].marksInfo[subject])
+                totalGPA2 = totalGPA2 + Number(mpg(this.state.results[roll].marksInfo[subject],this.state.FullMarks[subject]).gradePoint);
+
+            }
+            
             return <tr key={index}>
 
                 <td style={contentCss} key={index} className="text-center">{subject}</td>
                 <td style={contentCss} key={index} className="text-center">{this.state.FullMarks[subject]}</td>
-                <td style={contentCss} key={index} className="text-center">{this.state.results[roll].marksInfo[subject]}</td>
+                <td style={contentCss} key={index} className="text-center">{this.state.FullMarks[subject]==='Grade'?'':this.state.results[roll].marksInfo[subject]}</td>
                 <td style={contentCss} key={index} className="text-center">{mpg(this.state.results[roll].marksInfo[subject],this.state.FullMarks[subject]).gradePoint}</td>
                 {/* <td key={index} className="text-center">{this.state.results.marksInfo[subject]}</td> */}
                 {/* <td key={index} className="text-center">{subject==='Health'||subject==='Moral'?2:4}</td> */}
-                <td style={contentCss} key={index} className="text-center">{mpg(this.state.results[roll].marksInfo[subject],this.state.FullMarks[subject]).grade}</td>
+                <td style={contentCss} key={index} className="text-center">{this.state.FullMarks[subject]==='Grade'?this.state.results[roll].marksInfo[subject]:mpg(this.state.results[roll].marksInfo[subject],this.state.FullMarks[subject]).grade}</td>
                 {/* <td key={index} className="text-center">{subject==='Health'||subject==='Moral'?this.state.results.marksInfo[subject]/12.5:this.state.results.marksInfo[subject]/25}</td>
                  <td key={index} className="text-center">{subject==='Health'||subject==='Moral'?(this.state.results.marksInfo[subject]/12.5)*2:(this.state.results.marksInfo[subject]/25)*4}</td> */}
             </tr>
@@ -438,7 +448,7 @@ export class GPATable extends Component {
                             </div>
                             <div className="col-md-5 ">
 
-                                <p className="mb-1 text-right">Total GPA Obtained: &nbsp;&nbsp;&nbsp;&nbsp; <span style={{ fontWeight: 'bold' }}>{(totalGPA1/this.state.subjects.length).toFixed(1)}</span></p>
+                                <p className="mb-1 text-right">Total GPA Obtained: &nbsp;&nbsp;&nbsp;&nbsp; <span style={{ fontWeight: 'bold' }}>{(totalGPA1/count).toFixed(1)}</span></p>
 
                                 <p className="mb-1 text-right">Percentage: &nbsp;&nbsp;&nbsp;&nbsp;   <span style={{ fontWeight: 'bold' }}> {this.state.results[roll-1].percentage}%</span></p>
                                 
@@ -553,7 +563,7 @@ export class GPATable extends Component {
                             </div>
                             <div className="col-md-5 ">
 
-                                <p className="mb-1 text-right">Total GPA Obtained: &nbsp;&nbsp;&nbsp;&nbsp; <span style={{ fontWeight: 'bold' }}>{(totalGPA2/this.state.subjects.length).toFixed(1)}</span></p>
+                                <p className="mb-1 text-right">Total GPA Obtained: &nbsp;&nbsp;&nbsp;&nbsp; <span style={{ fontWeight: 'bold' }}>{(totalGPA2/count).toFixed(1)}</span></p>
 
                                 <p className="mb-1 text-right">Percentage: &nbsp;&nbsp;&nbsp;&nbsp;   <span style={{ fontWeight: 'bold' }}> {this.state.results[roll].percentage}%</span></p>
                             
