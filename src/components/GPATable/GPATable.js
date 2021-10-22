@@ -229,6 +229,87 @@ export class GPATable extends Component {
 
                 },
                 percentage:''
+            },
+            {
+                Name: '',
+                Roll: '',
+                class: '',
+                marksInfo: {
+
+                },
+                percentage:''
+            },
+            {
+                Name: '',
+                Roll: '',
+                class: '',
+                marksInfo: {
+
+                },
+                percentage:''
+            },
+            {
+                Name: '',
+                Roll: '',
+                class: '',
+                marksInfo: {
+
+                },
+                percentage:''
+            },
+            {
+                Name: '',
+                Roll: '',
+                class: '',
+                marksInfo: {
+
+                },
+                percentage:''
+            },
+            {
+                Name: '',
+                Roll: '',
+                class: '',
+                marksInfo: {
+
+                },
+                percentage:''
+            },
+            {
+                Name: '',
+                Roll: '',
+                class: '',
+                marksInfo: {
+
+                },
+                percentage:''
+            },
+            {
+                Name: '',
+                Roll: '',
+                class: '',
+                marksInfo: {
+
+                },
+                percentage:''
+            },
+            {
+                Name: '',
+                Roll: '',
+                class: '',
+                marksInfo: {
+
+                },
+                percentage:''
+            },
+            {
+                Name: '',
+                Roll: '',
+                class: '',
+                marksInfo: {
+
+                },
+                percentage:''
             }
             ],
 
