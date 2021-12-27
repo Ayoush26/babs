@@ -449,7 +449,7 @@ export class GPATable extends Component {
                         <div className="card-body p-0">
                             <h1 className="text-center p-1 ">BUDDHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h1>
                             <h2 className="text-center ">DIP PATH, DHARAN-9, SUNSARI, NEPAL</h2>
-                            <h2 className="text-center ">SECOND TERM EXAM 2077 BS</h2>
+                            <h2 className="text-center ">SECOND TERM EXAM 2078 BS</h2>
                             <h2 className="text-center">GRADE SHEET</h2>
 
                             <div className="row ">
@@ -479,7 +479,7 @@ export class GPATable extends Component {
                             <div className="col-md-4 text-left">
                                 <p className="mb-1 text-left">Roll No: {this.state.results[roll - 1].Roll}</p>
 
-                                <p className="mb-1 text-left">A.Y: 2020-2021</p>
+                                <p className="mb-1 text-left">A.Y: 2021-2022</p>
                             </div>
                         </div>
 
@@ -564,7 +564,7 @@ export class GPATable extends Component {
                         <div className="card-body p-0">
                             <h1 className="text-center p-1 ">BUDDHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h1>
                             <h2 className="text-center "> DIP PATH, DHARAN-9, SUNSARI, NEPAL</h2>
-                            <h2 className="text-center ">SECOND TERM EXAM 2077 BS</h2>
+                            <h2 className="text-center ">SECOND TERM EXAM 2078 BS</h2>
                             <h2 className="text-center">GRADE SHEET</h2>
 
                             <div className="row p-1 ">
@@ -594,7 +594,7 @@ export class GPATable extends Component {
                             <div className="col-md-4 text-left">
                                 <p className="mb-1 text-left">Roll No: {this.state.results[roll].Roll}</p>
 
-                                <p className="mb-1 text-left">A.Y: 2020-2021</p>
+                                <p className="mb-1 text-left">A.Y: 2021-2022</p>
                             </div>
                         </div>
 
