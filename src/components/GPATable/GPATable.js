@@ -449,7 +449,7 @@ export class GPATable extends Component {
                         <div className="card-body p-0">
                             <h1 className="text-center p-1 ">BUDDHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h1>
                             <h2 className="text-center ">DIP PATH, DHARAN-9, SUNSARI, NEPAL</h2>
-                            <h2 className="text-center ">SECOND TERM EXAM 2078 BS</h2>
+                            <h2 className="text-center ">THIRD TERM EXAM 2078 BS</h2>
                             <h2 className="text-center">GRADE SHEET</h2>
 
                             <div className="row ">
@@ -564,7 +564,7 @@ export class GPATable extends Component {
                         <div className="card-body p-0">
                             <h1 className="text-center p-1 ">BUDDHA &nbsp; ADARSHA &nbsp; BOARDING &nbsp; SCHOOL</h1>
                             <h2 className="text-center "> DIP PATH, DHARAN-9, SUNSARI, NEPAL</h2>
-                            <h2 className="text-center ">SECOND TERM EXAM 2078 BS</h2>
+                            <h2 className="text-center ">THIRD TERM EXAM 2078 BS</h2>
                             <h2 className="text-center">GRADE SHEET</h2>
 
                             <div className="row p-1 ">
