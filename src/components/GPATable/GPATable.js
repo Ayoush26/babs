@@ -471,7 +471,7 @@ export class GPATable extends Component {
               <h2 className="text-center ">
                 DIP PATH, DHARAN-9, SUNSARI, NEPAL
               </h2>
-              <h2 className="text-center ">FINAL TERM EXAM 2077 BS</h2>
+              <h2 className="text-center ">FINAL TERM EXAM 2078 BS</h2>
               <h2 className="text-center">GRADE SHEET</h2>
 
               <div className="row ">
@@ -662,7 +662,7 @@ export class GPATable extends Component {
                 {" "}
                 DIP PATH, DHARAN-9, SUNSARI, NEPAL
               </h2>
-              <h2 className="text-center ">FINAL TERM EXAM 2077 BS</h2>
+              <h2 className="text-center ">FINAL TERM EXAM 2078 BS</h2>
               <h2 className="text-center">GRADE SHEET</h2>
 
               <div className="row p-1 ">
