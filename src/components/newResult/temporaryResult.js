@@ -393,7 +393,7 @@ export const TemporaryResult = () => {
                 className={`${styles.bmFont} d-flex justify-content-center align-items-center `}
                 style={{ order: "-1", fontWeight: "900" }}
               >
-                {arg?.percentage}
+                {arg?.percentage}%
               </div>
             </div>
             <div
