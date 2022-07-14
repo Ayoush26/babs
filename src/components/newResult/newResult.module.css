@@ -1,0 +1,95 @@
+@import url(//db.onlinewebfonts.com/c/a4572af241c425d81c70af646e0f40e3?family=GGX88W01-Regular);
+@import url(//db.onlinewebfonts.com/c/4770a4931a165980cd14efe2334777ef?family=BM+receipt);
+
+.wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    width: 100%;
+    height: 398mm;
+}
+
+
+.content {
+    border: 1px solid black;
+    width: 98%;
+    height: 99%;
+    margin: 0 auto;
+    padding: 10px 0;
+}
+
+.h4{
+    font-size: 1.6rem;
+    font-weight: 400;
+}
+
+.logo{
+    top: 40px;
+    left: 109px;
+    height: 60%;
+    width: 58%;   
+}
+
+.h1{
+    font-family: "GGX88W01-Regular";
+    font-size: 2rem;
+}
+
+.h2{
+    font-family: "GGX88W01-Regular";
+    font-size:1.8rem;
+}
+
+.p{
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin:0;
+}
+
+.table{
+    margin:48px 0px;
+    height: 560px;
+    border-bottom:1px solid black;
+
+}
+
+
+
+.header{
+    font-size: 1.4rem;
+    font-weight: 600;
+    height: 110px;
+    border-top:1px solid black;
+    border-bottom: 1px solid black;
+    background-color: rgb(211, 224, 239);
+}
+
+.gpa{
+    font-size: 1.4rem;
+    font-weight: 600;
+    float: right;
+    display: flex; 
+    margin-right:20px;
+}
+
+.line{
+    height: 559px;
+    border-left: 1px solid black;
+}
+
+.span{
+    font-family: "BM receipt";
+    text-align: center;
+    font-weight: 900;
+    font-size: large;
+    flex:auto;
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+    text-transform: uppercase;
+}
+
+.bmFont{
+    font-family: "BM receipt";
+    font-weight: 900;
+    font-size: large;
+    text-transform: uppercase;
+}

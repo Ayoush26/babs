@@ -20,8 +20,8 @@
  .main h2{ font-family: Copperplate, "Copperplate Gothic Light", fantasy; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 22.4px; padding: 1px }
 
 
-@page{size: landscape;}
 
 .border {
   border: 1px solid black!important;
 }
+

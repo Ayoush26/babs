@@ -1,0 +1,13 @@
+@import url(//db.onlinewebfonts.com/c/a4572af241c425d81c70af646e0f40e3?family=GGX88W01-Regular);
+@import url(//db.onlinewebfonts.com/c/4770a4931a165980cd14efe2334777ef?family=BM+receipt);
+
+
+.null{
+background: rgba(78, 78, 78, 0.324) !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
