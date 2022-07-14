@@ -50,12 +50,12 @@
 }
 
 .h1{
-    font-family: "GGX88W01-Regular";
+    font-weight: bold;
     font-size: 2rem;
 }
 
 .h2{
-    font-family: "GGX88W01-Regular";
+   
     font-size:1.8rem;
 }
 
@@ -104,19 +104,19 @@
 }
 
 .span{
-    font-family: "BM receipt";
+    
     text-align: center;
     font-weight: 900;
-    font-size: large;
+    font-size: 1.4rem;
     flex:auto;
     border-bottom: 1px solid rgba(0,0,0,0.5);
     text-transform: uppercase;
 }
 
 .bmFont{
-    font-family: "BM receipt";
-    font-weight: 900;
-    font-size: large;
+    
+    font-weight: 600;
+    font-size: 1.4rem;
     text-transform: uppercase;
 }
 

@@ -353,8 +353,8 @@ export const TemporaryResult = () => {
             <div className={`${styles.gpa} d-flex align-items-center`}>
               GRADE POINT AVERAGE (GPA):
               <div
-                className={`${styles.bmFont} d-flex justify-content-center align-items-center mt-2`}
-                style={{ order: "-1" }}
+                className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
+                style={{ order: "-1", fontWeight: "900" }}
               >
                 3.02
               </div>
@@ -365,15 +365,15 @@ export const TemporaryResult = () => {
             >
               PERCENTAGE:
               <div
-                className={`${styles.bmFont} d-flex justify-content-center align-items-center mt-2 `}
-                style={{ order: "-1" }}
+                className={`${styles.bmFont} d-flex justify-content-center align-items-center `}
+                style={{ order: "-1", fontWeight: "900" }}
               >
                 {arg?.percentage}
               </div>
             </div>
             <div
               className={` ${styles.sign} row`}
-              style={{ marginTop: "120px", marginLeft: "30px" }}
+              style={{ marginTop: "110px", marginLeft: "30px" }}
             >
               <div className="col-md-3 bt">
                 <p
