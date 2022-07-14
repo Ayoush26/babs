@@ -110,7 +110,7 @@ export const Form = () => {
                           className="input--style-5"
                           style={{
                             lineHeight: "50px",
-                            padding: "12px 50px",
+                            padding: "12px 34px",
                             border: "none",
                             outline: "none",
                           }}
@@ -188,7 +188,14 @@ export const Form = () => {
                 subjects.map((subject) => {
                   return (
                     <div key={subject._id} className="form-row m-b-55">
-                      <div className="name">{subject.Name}</div>
+                      <div className="name">
+                        {subject.Name +
+                          ` (${
+                            subject.FullMarks === "Grade"
+                              ? "G"
+                              : subject.FullMarks
+                          })`}
+                      </div>
                       {subject.FullMarks === "Grade" ? (
                         <div className="value">
                           <div className="input-group">

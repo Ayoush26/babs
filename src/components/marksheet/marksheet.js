@@ -234,6 +234,7 @@ class MarksheetWithoutRouter extends React.Component {
         bottom: "auto",
         marginRight: "20%",
         transform: "translate(-50%, -50%)",
+        overflowY: "auto",
       },
     };
 
@@ -253,7 +254,9 @@ class MarksheetWithoutRouter extends React.Component {
                 {FullMarks === "Grade"
                   ? result.marksInfo[Name]?.grade
                   : +result.marksInfo[Name]?.exam +
-                    +result.marksInfo[Name]?.test}
+                    (result.marksInfo[Name]?.test
+                      ? +result.marksInfo[Name].test
+                      : 0)}
               </td>
             );
           })}
@@ -463,31 +466,6 @@ class MarksheetWithoutRouter extends React.Component {
           {/* <h2 ref={_subtitle => (subtitle = _subtitle)}>Hello</h2> */}
 
           <form className="form-group">
-            <div className="row">
-              <div className="col-8">
-                <label>
-                  <h5>Name:</h5>
-                </label>
-                <input
-                  name="Name"
-                  onChange={this.handleChange}
-                  className="form-control"
-                  value={this.state.currentResult.Name}
-                ></input>
-              </div>
-              <div className="col-4">
-                <label>
-                  <h5 className="pt-1">Roll No:</h5>
-                </label>
-                <input
-                  type="text"
-                  onChange={this.handleChange}
-                  name="Roll"
-                  value={this.state.currentResult.Roll}
-                  className="form-control"
-                ></input>
-              </div>
-            </div>
             <div className="row">
               {this.state.subjects.map((subject) => {
                 return (

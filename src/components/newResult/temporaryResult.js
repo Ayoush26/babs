@@ -62,8 +62,7 @@ export const TemporaryResult = () => {
             paddingTop: "3px",
           }}
         >
-          {marksInfo.fullMarks === "Grade" ||
-            (marksInfo.fullMarks === "100" ? 4 : 2)}
+          {marksInfo.fullMarks === "50" ? 2 : 4}
         </div>
         <div
           className=" d-flex justify-content-center align-items-center text-center"
@@ -92,7 +91,10 @@ export const TemporaryResult = () => {
         >
           {marksInfo.fullMarks === "Grade"
             ? marksInfo.grade
-            : mpg(+marksInfo.exam + +marksInfo.test, marksInfo.fullMarks).grade}
+            : mpg(
+                +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
+                marksInfo.fullMarks
+              ).grade}
         </div>
         <div
           className=" d-flex justify-content-center align-items-center text-center"
@@ -103,8 +105,10 @@ export const TemporaryResult = () => {
         >
           {marksInfo.fullMarks === "Grade"
             ? gradetoGPA(marksInfo.grade)
-            : mpg(+marksInfo.exam + +marksInfo.test, marksInfo.fullMarks)
-                .gradePoint}
+            : mpg(
+                +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
+                marksInfo.fullMarks
+              ).gradePoint}
         </div>
         <div
           className=" d-flex justify-content-center align-items-center text-center"
@@ -118,6 +122,27 @@ export const TemporaryResult = () => {
   };
 
   const temporaryResultJSX = (arg) => {
+    let avgGPA = "";
+    if (arg) {
+      const subjects = Object.keys(arg.marksInfo);
+      let totalGradePoint = 0;
+      let totalCredit = 0;
+      subjects.forEach((subject) => {
+        totalCredit += arg.marksInfo[subject].fullMarks === "50" ? 2 : 4;
+        totalGradePoint +=
+          arg.marksInfo[subject].fullMarks === "Grade"
+            ? +gradetoGPA(arg.marksInfo[subject].grade) * 4
+            : +mpg(
+                +arg.marksInfo[subject].exam +
+                  (arg.marksInfo[subject].test
+                    ? +arg.marksInfo[subject].test
+                    : 0),
+                +arg.marksInfo[subject].fullMarks
+              ).gradePoint *
+              (arg.marksInfo[subject].fullMarks === "50" ? 2 : 4);
+      });
+      avgGPA = (totalGradePoint / totalCredit).toFixed(2);
+    }
     return (
       <div className={`${styles.wrapper} position-relative`}>
         <div className={`${styles.watermark} d-flex flex-column`}>
@@ -128,7 +153,7 @@ export const TemporaryResult = () => {
               transform: "scale(2)",
               paddingBottom: "40px",
               opacity: "0.2",
-              marginTop: "16f0px",
+              marginTop: "190px",
             }}
           >
             BUDDHA ADARSHA
@@ -356,7 +381,7 @@ export const TemporaryResult = () => {
                 className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
                 style={{ order: "-1", fontWeight: "900" }}
               >
-                3.02
+                {avgGPA}
               </div>
             </div>
             <div
