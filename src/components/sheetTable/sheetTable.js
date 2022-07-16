@@ -61,7 +61,10 @@ export class SheetTable extends Component {
           {this.state.subjects.map((subject, index) => {
             return (
               <td className="tableDimension" key={index}>
-                {result.marksInfo[subject]}
+                {+result.marksInfo[subject].exam +
+                  (result.marksInfo[subject].test
+                    ? +result.marksInfo[subject].test
+                    : 0)}
               </td>
             );
           })}
