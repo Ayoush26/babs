@@ -61,12 +61,14 @@ export class SheetTable extends Component {
           {this.state.subjects.map((subject, index) => {
             return (
               <td className="tableDimension" key={index}>
-                {result.marksInfo[subject].fullMarks === "Grade"
-                  ? result.marksInfo[subject].grade
-                  : +result.marksInfo[subject].exam +
-                    (result.marksInfo[subject].test
-                      ? +result.marksInfo[subject].test
-                      : 0)}
+                {result.marksInfo[subject]
+                  ? result.marksInfo[subject].fullMarks === "Grade"
+                    ? result.marksInfo[subject].grade
+                    : +result.marksInfo[subject].exam +
+                      (result.marksInfo[subject].test
+                        ? +result.marksInfo[subject].test
+                        : 0)
+                  : "Undefined"}
               </td>
             );
           })}
@@ -88,7 +90,7 @@ export class SheetTable extends Component {
               DIP PATH, DHARAN-9, SUNSARI, NEPAL
             </h5>
             <h4 className="text-center p-2 font-weight-bold">
-              MARK SHEET OF FINAL TERM EXAM, 2079 BS
+              MARK SHEET OF FIRST TERM EXAM, 2079 BS
             </h4>
 
             <div className="row p-2">
