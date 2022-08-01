@@ -15,7 +15,7 @@ export const LeftPanel = (props) => {
             </li>
             <li className="menu-title">Admin Panel</li>
             {/* /.menu-title */}
-            <li className="menu-item-has-children dropdown">
+            <li className={props.active === "students" ? "active" : ""}>
               <Link to="/students">
                 {" "}
                 <i className="menu-icon fa fa-cogs" />
@@ -122,7 +122,14 @@ export const LeftPanel = (props) => {
                 </li>
               </ul>
             </li>
-            <li className={props.active === "settings" ? "active" : ""}>
+            <li className={props.active === "attendance" ? "active" : ""}>
+              <Link to="/attendance">
+                {" "}
+                <i className="menu-icon fa fa-address-book" />
+                Attendance
+              </Link>
+            </li>
+            <li className={props.active === "configure" ? "active" : ""}>
               <Link to="/settings">
                 {" "}
                 <i className="menu-icon fa fa-cog" />

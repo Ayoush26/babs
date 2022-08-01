@@ -98,6 +98,12 @@
 
 }
 
+.gradeInfo{
+    display: flex;
+    justify-content: space-between;
+    
+}
+
 .line{
     height: 559px;
     border-left: 1px solid black;

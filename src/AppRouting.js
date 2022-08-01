@@ -16,6 +16,7 @@ import { NewResult } from "./components/newResult/newResult";
 import { TemporaryResult } from "./components/newResult/temporaryResult";
 import { Configure } from "./components/configure/configure";
 import { Student } from "./components/student/student";
+import { Attendance } from "./components/attendance/attendance";
 
 export const AppRouting = () => {
   return (
@@ -36,6 +37,7 @@ export const AppRouting = () => {
       <Route exact path="/newresult2" component={TemporaryResult}></Route>
       <Route exact path="/settings" component={Configure}></Route>
       <Route exact path="/students" component={Student}></Route>
+      <Route exact path="/attendance" component={Attendance}></Route>
     </Router>
   );
 };

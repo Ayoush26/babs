@@ -15,8 +15,6 @@ export const TemporaryResult = () => {
 
   const slug = useLocation();
 
-  console.log(result);
-
   useEffect(() => {
     const fetchData = async () => {
       const res = await Promise.all([
@@ -375,30 +373,45 @@ export const TemporaryResult = () => {
               </div>
             </div>
             {/*Table end*/}
-            <div className={`${styles.gpa} d-flex align-items-center`}>
-              GRADE POINT AVERAGE (GPA):
-              <div
-                className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
-                style={{ order: "-1", fontWeight: "900" }}
-              >
-                {avgGPA}
+            <div className={styles.gradeInfo}>
+              <div style={{ paddingLeft: "30px" }}>
+                <div className={`${styles.gpa} d-flex align-items-center`}>
+                  ATTENDANCE:
+                  <div
+                    className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
+                    style={{ order: "-1", fontWeight: "900" }}
+                  >
+                    {arg?.attendance ? arg.attendance : "N/A"}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div
-              className={`${styles.gpa} d-flex align-items-center`}
-              style={{ marginBottom: "48px" }}
-            >
-              PERCENTAGE:
-              <div
-                className={`${styles.bmFont} d-flex justify-content-center align-items-center `}
-                style={{ order: "-1", fontWeight: "900" }}
-              >
-                {arg?.percentage}%
+              <div>
+                <div className={`${styles.gpa} d-flex align-items-center`}>
+                  GRADE POINT AVERAGE (GPA):
+                  <div
+                    className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
+                    style={{ order: "-1", fontWeight: "900" }}
+                  >
+                    {avgGPA}
+                  </div>
+                </div>
+                <div
+                  className={`${styles.gpa} d-flex align-items-center`}
+                  style={{ marginBottom: "48px" }}
+                >
+                  PERCENTAGE:
+                  <div
+                    className={`${styles.bmFont} d-flex justify-content-center align-items-center `}
+                    style={{ order: "-1", fontWeight: "900" }}
+                  >
+                    {arg?.percentage}%
+                  </div>
+                </div>
               </div>
             </div>
             <div
               className={` ${styles.sign} row`}
-              style={{ marginTop: "110px", marginLeft: "30px" }}
+              style={{ marginTop: "70px", marginLeft: "30px" }}
             >
               <div className="col-md-3 bt">
                 <p
