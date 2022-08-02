@@ -224,7 +224,7 @@ export const TemporaryResult = () => {
                 <p className={styles.p}>
                   IN THE TERM EXAM, ClASS-{arg?.class.toUpperCase()} OF
                 </p>
-                <span className={`${styles.span} mx-3`}>2076 BS</span>
+                <span className={`${styles.span} mx-3`}>{result.year} BS</span>
                 <p className={styles.p}>ARE GIVEN BELOW:</p>
               </div>
             </div>
