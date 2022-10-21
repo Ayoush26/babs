@@ -6,7 +6,7 @@ const headers = {
 }
 
 const http = axios.create({
-    baseURL: process.env.REACT_APP_HOST,
+    baseURL: 'https://babs-api2.herokuapp.com/',
     responseType: 'json'
 })
 
