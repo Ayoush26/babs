@@ -6,7 +6,7 @@ const headers = {
 }
 
 const http = axios.create({
-    baseURL: 'https://babs-api2.herokuapp.com/',
+    baseURL: 'babsadmin-production.up.railway.app/' ,
     responseType: 'json'
 })
 
