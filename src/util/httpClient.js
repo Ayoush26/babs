@@ -6,7 +6,7 @@ const headers = {
 }
 
 const http = axios.create({
-    baseURL: 'https://babs-api2-production.up.railway.app/',
+    baseURL: 'https://babs-api2.onrender.com/',
     responseType: 'json'
 })
 
