@@ -90,7 +90,7 @@ export class SheetTable extends Component {
               DIP PATH, DHARAN-9, SUNSARI, NEPAL
             </h5>
             <h4 className="text-center p-2 font-weight-bold">
-              MARK SHEET OF SECOND TERM EXAM, 2080 BS
+              MARK SHEET OF THIRD TERM EXAM, 2080 BS
             </h4>
 
             <div className="row p-2">
