@@ -311,8 +311,8 @@ export const TemporaryResult = () => {
                         OBTAINED MARKS
                       </div>
                       <div className="d-flex h-100">
-                        <div className="w-50">EX</div>
-                        <div className="w-50">UT</div>
+                        <div className="w-50">TH</div>
+                        <div className="w-50">IN</div>
                       </div>
                     </div>
                   </div>
