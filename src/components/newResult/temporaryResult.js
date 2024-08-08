@@ -22,25 +22,10 @@ export const TemporaryResult = () => {
         httpClient.get(`/marksheet/${slug.search.split("&")[1]}`),
       ]);
 
-      function swapSubjects(studentData) {
-        studentData.forEach((student) => {
-          if (student.marksInfo) {
-            // Temporarily store the 'Grammar' data
-            const tempGrammar = student.marksInfo.Grammar;
-
-            // Swap 'Grammar' with 'Samajik'
-            student.marksInfo.Grammar = student.marksInfo.Samajik;
-            student.marksInfo.Samajik = tempGrammar;
-          }
-        });
-        return studentData;
-      }
-      const newRes = swapSubjects(res[1].data.data);
-
       setResult((prev) => ({
         ...res[0].data.settings,
-        result1: newRes[+slug.search.split("&")[2] - 1],
-        result2: newRes[+slug.search.split("&")[2]],
+        result1: res[1].data.data[+slug.search.split("&")[2] - 1],
+        result2: res[1].data.data[+slug.search.split("&")[2]],
       }));
       window.print();
     };
@@ -467,6 +452,30 @@ export const TemporaryResult = () => {
     );
   };
 
+  function swapSubjects(record) {
+    // Extract marksInfo into a temporary object with reordered subjects
+    if(!record){
+      return null;
+    }
+    let newMarksInfo = {
+      Wonder: record.marksInfo.Wonder,
+      Nepali: record.marksInfo.Nepali,
+      Maths: record.marksInfo.Maths,
+      Science: record.marksInfo.Science,
+      Samajik: record.marksInfo.Grammar, // Assign Grammar values to Samajik
+      Grammar: record.marksInfo.Samajik, // Assign Samajik values to Grammar
+
+      Health: record.marksInfo.Health,
+      Computer: record.marksInfo.Computer,
+      "Hamro Dharan": record.marksInfo["Hamro Dharan"],
+    };
+
+    // Assign the new reordered object back to the record
+    record.marksInfo = newMarksInfo;
+
+    return record;
+  }
+
   return (
     <div
       className={styles.wrapperMain}
@@ -477,8 +486,8 @@ export const TemporaryResult = () => {
         }
       }
     >
-      {temporaryResultJSX(result.result1)}
-      {result.result2 && temporaryResultJSX(result.result2)}
+      {temporaryResultJSX(swapSubjects(result.result1))}
+      {result.result2 && temporaryResultJSX(swapSubjects(result.result2))}
     </div>
   );
 };
