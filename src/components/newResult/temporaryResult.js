@@ -17,7 +17,7 @@ export const TemporaryResult = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res1 = await Promise.all([
+      const res = await Promise.all([
         httpClient.get("/settings"),
         httpClient.get(`/marksheet/${slug.search.split("&")[1]}`),
       ]);
@@ -35,12 +35,12 @@ export const TemporaryResult = () => {
         });
         return studentData;
       }
-      const res = swapSubjects(res1);
+      const newRes = swapSubjects(res[1]);
 
       setResult((prev) => ({
         ...res[0].data.settings,
-        result1: res[1].data.data[+slug.search.split("&")[2] - 1],
-        result2: res[1].data.data[+slug.search.split("&")[2]],
+        result1: newRes.data.data[+slug.search.split("&")[2] - 1],
+        result2: newRes.data.data[+slug.search.split("&")[2]],
       }));
       window.print();
     };
