@@ -17,10 +17,26 @@ export const TemporaryResult = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await Promise.all([
+      const res1 = await Promise.all([
         httpClient.get("/settings"),
         httpClient.get(`/marksheet/${slug.search.split("&")[1]}`),
       ]);
+
+      function swapSubjects(studentData) {
+        studentData.forEach((student) => {
+          if (student.marksInfo) {
+            // Temporarily store the 'Grammar' data
+            const tempGrammar = student.marksInfo.Grammar;
+
+            // Swap 'Grammar' with 'Samajik'
+            student.marksInfo.Grammar = student.marksInfo.Samajik;
+            student.marksInfo.Samajik = tempGrammar;
+          }
+        });
+        return studentData;
+      }
+      const res = swapSubjects(res1);
+
       setResult((prev) => ({
         ...res[0].data.settings,
         result1: res[1].data.data[+slug.search.split("&")[2] - 1],
