@@ -35,12 +35,12 @@ export const TemporaryResult = () => {
         });
         return studentData;
       }
-      const newRes = swapSubjects(res[1]);
+      const newRes = swapSubjects(res[1].data.data);
 
       setResult((prev) => ({
         ...res[0].data.settings,
-        result1: newRes.data.data[+slug.search.split("&")[2] - 1],
-        result2: newRes.data.data[+slug.search.split("&")[2]],
+        result1: newRes[+slug.search.split("&")[2] - 1],
+        result2: newRes[+slug.search.split("&")[2]],
       }));
       window.print();
     };
