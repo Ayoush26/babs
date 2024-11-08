@@ -452,30 +452,6 @@ export const TemporaryResult = () => {
     );
   };
 
-  function swapSubjects(record) {
-    // Extract marksInfo into a temporary object with reordered subjects
-    if(!record){
-      return null;
-    }
-    let newMarksInfo = {
-      Wonder: record.marksInfo.Wonder,
-      Nepali: record.marksInfo.Nepali,
-      Maths: record.marksInfo.Maths,
-      Science: record.marksInfo.Science,
-      Samajik: record.marksInfo.Grammar, // Assign Grammar values to Samajik
-      Grammar: record.marksInfo.Samajik, // Assign Samajik values to Grammar
-
-      Health: record.marksInfo.Health,
-      Computer: record.marksInfo.Computer,
-      "Hamro Dharan": record.marksInfo["Hamro Dharan"],
-    };
-
-    // Assign the new reordered object back to the record
-    record.marksInfo = newMarksInfo;
-
-    return record;
-  }
-
   return (
     <div
       className={styles.wrapperMain}
@@ -486,8 +462,8 @@ export const TemporaryResult = () => {
         }
       }
     >
-      {temporaryResultJSX(swapSubjects(result.result1))}
-      {result.result2 && temporaryResultJSX(swapSubjects(result.result2))}
+      {temporaryResultJSX(result.result1)}
+      {result.result2 && temporaryResultJSX(result.result2)}
     </div>
   );
 };
