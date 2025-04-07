@@ -2,18 +2,21 @@
   "name": "bs1",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.x"
+  },
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.8",
-    "@testing-library/react": "^11.2.2",
-    "@testing-library/user-event": "^12.6.0",
+    "@testing-library/jest-dom": "^6.1.2",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
     "axios": "^0.21.1",
     "cogo-toast": "^4.2.3",
     "moment": "^2.29.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
     "react-modal": "^3.12.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.1",
     "react-watermark-component": "^2.2.1",
     "web-vitals": "^0.2.4"
   },
@@ -31,9 +34,9 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
+      ">0.3%",
       "not dead",
-      "not op_mini all"
+      "not ie 11"
     ],
     "development": [
       "last 1 chrome version",
