@@ -17,21 +17,33 @@ export const TemporaryResult = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await Promise.all([
-        httpClient.get("/settings"),
-        httpClient.get(`/marksheet/${slug.search.split("&")[1]}`),
-      ]);
+      try {
+        const [settingsRes, marksheetRes] = await Promise.all([
+          httpClient.get("/settings"),
+          httpClient.get(`/marksheet/${slug.search.split("&")[1]}`),
+        ]);
 
-      setResult((prev) => ({
-        ...res[0].data.settings,
-        result1: res[1].data.data[+slug.search.split("&")[2] - 1],
-        result2: res[1].data.data[+slug.search.split("&")[2]],
-      }));
-      window.print();
+        // Update state first
+        setResult((prev) => ({
+          ...settingsRes.data.settings,
+          result1: marksheetRes.data.data[+slug.search.split("&")[2] - 1],
+          result2: marksheetRes.data.data[+slug.search.split("&")[2]],
+        }));
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
     };
 
     fetchData();
   }, [slug]);
+
+  // Add this effect to handle print after state updates
+  useEffect(() => {
+    if (result.result1 && result.result2) {
+      // Check if data exists
+      window.print();
+    }
+  }, [result]); // Runs when result changes
 
   const tableBody = (marksInfo, subject, index) => {
     return (
