@@ -31,7 +31,7 @@ export const TemporaryResult = () => {
               "Nepali",
               "Maths",
               "Science",
-              "Samajik",
+              " Samajik",
               "Grammar",
               "GK",
             ];
