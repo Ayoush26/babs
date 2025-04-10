@@ -23,12 +23,59 @@ export const TemporaryResult = () => {
           httpClient.get(`/marksheet/${slug.search.split("&")[1]}`),
         ]);
 
+        //temporary fix for class 3
+        if (slug.search.split("&")[1] === "3") {
+          const reorderMarks = (marksData) => {
+            const desiredOrder = [
+              "Wonder",
+              "Nepali",
+              "Maths",
+              "Science",
+              "Samajik",
+              "Grammar",
+              "GK",
+            ];
+            const sortedMarks = {};
+
+            desiredOrder.forEach((subject) => {
+              if (marksData[subject]) {
+                sortedMarks[subject] = marksData[subject];
+              }
+            });
+
+            return sortedMarks;
+          };
+
+          setResult((prev) => ({
+            ...settingsRes.data.settings,
+            result1: {
+              ...marksheetRes.data.data[+slug.search.split("&")[2] - 1],
+              marksInfo: reorderMarks(
+                marksheetRes.data.data[+slug.search.split("&")[2] - 1].marksInfo
+              ),
+            },
+            result2: {
+              ...marksheetRes.data.data[+slug.search.split("&")[2]],
+              marksInfo: reorderMarks(
+                marksheetRes.data.data[+slug.search.split("&")[2]].marksInfo
+              ),
+            },
+          }));
+        } else {
+          setResult((prev) => ({
+            ...settingsRes.data.settings,
+            result1: marksheetRes.data.data[+slug.search.split("&")[2] - 1],
+            result2: marksheetRes.data.data[+slug.search.split("&")[2]],
+          }));
+        }
+
+        //remove temporary fix and then use this instead
         // Update state first
-        setResult((prev) => ({
-          ...settingsRes.data.settings,
-          result1: marksheetRes.data.data[+slug.search.split("&")[2] - 1],
-          result2: marksheetRes.data.data[+slug.search.split("&")[2]],
-        }));
+        // setResult((prev) => ({
+        //   ...settingsRes.data.settings,
+        //   result1: marksheetRes.data.data[+slug.search.split("&")[2] - 1],
+        //   result2: marksheetRes.data.data[+slug.search.split("&")[2]],
+        // }));
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
