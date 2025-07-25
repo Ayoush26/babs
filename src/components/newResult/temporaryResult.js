@@ -455,7 +455,7 @@ export const TemporaryResult = () => {
                     {avgGPA}
                   </div>
                 </div>
-                <div
+                {/* <div
                   className={`${styles.gpa} d-flex align-items-center`}
                   style={{ marginBottom: "48px" }}
                 >
@@ -466,7 +466,7 @@ export const TemporaryResult = () => {
                   >
                     {arg?.percentage}%
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div
