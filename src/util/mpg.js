@@ -1,5 +1,9 @@
 module.exports = (obtainedMarks, fullMarks) => {
   var result, gradePoint, grade;
+
+  if(!obtainedMarks) return {
+    grade:''
+  };
   var obtainedMarks = Number(obtainedMarks);
   var fullMarks = Number(fullMarks);
   if (fullMarks === 100) {
@@ -27,12 +31,8 @@ module.exports = (obtainedMarks, fullMarks) => {
       gradePoint = "2.0";
       grade = "C";
     }
-    if (obtainedMarks < 40 && obtainedMarks >= 30) {
+    if (obtainedMarks < 40) {
       gradePoint = "1.6";
-      grade = "D+";
-    }
-    if (obtainedMarks < 30) {
-      gradePoint = "1.2";
       grade = "D";
     }
   } else {
@@ -60,12 +60,8 @@ module.exports = (obtainedMarks, fullMarks) => {
       gradePoint = "2.0";
       grade = "C";
     }
-    if (obtainedMarks < 20 && obtainedMarks >= 15) {
+    if (obtainedMarks < 20 ) {
       gradePoint = "1.6";
-      grade = "D+";
-    }
-    if (obtainedMarks < 15) {
-      gradePoint = "1.2";
       grade = "D";
     }
   }

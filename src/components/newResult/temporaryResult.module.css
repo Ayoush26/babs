@@ -131,3 +131,9 @@
     font-family: 500;
     text-transform: uppercase;
 }
+
+.remarks { 
+  font-size: 0.95rem;
+  font-family: "Luxurious Roman", serif;
+}
+

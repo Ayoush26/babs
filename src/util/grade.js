@@ -1,12 +1,6 @@
 module.exports = (percentage) => {
-  if (percentage > 0 && percentage < 20) {
-    return "E";
-  }
-  if (percentage >= 20 && percentage < 30) {
+  if (percentage > 0 && percentage < 40) {
     return "D";
-  }
-  if (percentage >= 30 && percentage < 40) {
-    return "D+";
   }
   if (percentage >= 40 && percentage < 50) {
     return "C";
@@ -26,6 +20,6 @@ module.exports = (percentage) => {
   if (percentage >= 90 && percentage < 100) {
     return "A+";
   } else {
-    return "unknown";
+    return "NG"; //not graded
   }
 };

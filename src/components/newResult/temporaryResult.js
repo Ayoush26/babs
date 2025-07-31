@@ -5,6 +5,8 @@ import httpClient from "../../util/httpClient";
 import mpg from "../../util/mpg";
 import logo from "./../../images/logo.png";
 import styles from "./temporaryResult.module.css";
+import grade from "../../util/grade";
+import graderemarks from "../../util/graderemarks";
 
 export const TemporaryResult = () => {
   const [result, setResult] = useState({
@@ -92,6 +94,48 @@ export const TemporaryResult = () => {
     }
   }, [result]); // Runs when result changes
 
+  const handleGradeMarks = (marksInfo) => {
+    if (!marksInfo.test) {
+      return {
+        obtainedMarks: +marksInfo.exam,
+        fullMarks: +marksInfo.fullMarks
+      }
+    }
+    if (+marksInfo.fullMarks === 100) {
+      return {
+        obtainedMarks: +marksInfo.exam,
+        fullMarks: 50
+      }
+    }
+    return {
+      obtainedMarks: (+marksInfo.exam) * 2,
+      fullMarks: 50
+    }
+  }
+
+  const mpgCAll = (marksInfo) => {
+    const newData = handleGradeMarks(marksInfo)
+    return mpg(newData.obtainedMarks, newData.fullMarks).grade
+  }
+
+  const mpgCallTest = (marksInfo) => {
+    if (!marksInfo.test) return "";
+    if (+marksInfo.fullMarks === 100) {
+      return mpg(marksInfo.test, 50).grade
+    }
+    return mpg((+marksInfo.test) * 2, 50).grade
+  }
+
+  const remarks = (marksInfo) => {
+    const grade = marksInfo.fullMarks === "Grade"
+      ? marksInfo.grade
+      : mpg(
+        +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
+        marksInfo.fullMarks
+      ).grade;
+    return graderemarks(grade)
+  }
+
   const tableBody = (marksInfo, subject, index) => {
     return (
       <>
@@ -113,7 +157,7 @@ export const TemporaryResult = () => {
         >
           {subject}
         </div>
-        <div
+        {/* <div
           className=" d-flex justify-content-center align-items-center text-center"
           style={{
             width: "6%",
@@ -121,6 +165,15 @@ export const TemporaryResult = () => {
           }}
         >
           {marksInfo.fullMarks === "50" ? 2 : 4}
+        </div> */}
+        <div
+          className=" d-flex justify-content-center align-items-center text-center"
+          style={{
+            width: "8%",
+            paddingTop: "3px",
+          }}
+        >
+          {marksInfo.fullMarks === "Grade" ? marksInfo.grade : mpgCAll(marksInfo)}
         </div>
         <div
           className=" d-flex justify-content-center align-items-center text-center"
@@ -129,16 +182,7 @@ export const TemporaryResult = () => {
             paddingTop: "3px",
           }}
         >
-          {marksInfo.fullMarks === "Grade" || marksInfo.exam}
-        </div>
-        <div
-          className=" d-flex justify-content-center align-items-center text-center"
-          style={{
-            width: "8%",
-            paddingTop: "3px",
-          }}
-        >
-          {marksInfo.fullMarks === "Grade" || marksInfo.test}
+          {marksInfo.fullMarks === "Grade" || mpgCallTest(marksInfo)}
         </div>
         <div
           className=" d-flex justify-content-center align-items-center text-center"
@@ -150,9 +194,9 @@ export const TemporaryResult = () => {
           {marksInfo.fullMarks === "Grade"
             ? marksInfo.grade
             : mpg(
-                +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
-                marksInfo.fullMarks
-              ).grade}
+              +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
+              marksInfo.fullMarks
+            ).grade}
         </div>
         <div
           className=" d-flex justify-content-center align-items-center text-center"
@@ -164,17 +208,20 @@ export const TemporaryResult = () => {
           {marksInfo.fullMarks === "Grade"
             ? gradetoGPA(marksInfo.grade)
             : mpg(
-                +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
-                marksInfo.fullMarks
-              ).gradePoint}
+              +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
+              marksInfo.fullMarks
+            ).gradePoint}
         </div>
         <div
-          className=" d-flex justify-content-center align-items-center text-center"
+          className={`d-flex justify-content-center align-items-center text-center ${styles.remarks}`}
           style={{
-            width: "8%",
+            width: "13%",
             paddingTop: "3px",
+            paddingLeft:"14px"
           }}
-        ></div>
+        >
+          {remarks(marksInfo)}
+        </div>
       </>
     );
   };
@@ -191,13 +238,13 @@ export const TemporaryResult = () => {
           arg.marksInfo[subject].fullMarks === "Grade"
             ? +gradetoGPA(arg.marksInfo[subject].grade) * 4
             : +mpg(
-                +arg.marksInfo[subject].exam +
-                  (arg.marksInfo[subject].test
-                    ? +arg.marksInfo[subject].test
-                    : 0),
-                +arg.marksInfo[subject].fullMarks
-              ).gradePoint *
-              (arg.marksInfo[subject].fullMarks === "50" ? 2 : 4);
+              +arg.marksInfo[subject].exam +
+              (arg.marksInfo[subject].test
+                ? +arg.marksInfo[subject].test
+                : 0),
+              +arg.marksInfo[subject].fullMarks
+            ).gradePoint *
+            (arg.marksInfo[subject].fullMarks === "50" ? 2 : 4);
       });
       avgGPA = (totalGradePoint / totalCredit).toFixed(2);
     }
@@ -300,30 +347,27 @@ export const TemporaryResult = () => {
                   className={`${styles.line} position-absolute d-flex`}
                   style={{ top: "0", left: "54%" }}
                 ></div>
-                <div
-                  className={`${styles.line} position-absolute d-flex`}
-                  style={{ top: "0", left: "60%" }}
-                ></div>
+
                 <div
                   className={`position-absolute d-flex`}
                   style={{
-                    top: "55px",
-                    left: "68%",
+                    top: "71px",
+                    left: "62%",
                     borderLeft: "1px solid black",
-                    height: "504px",
+                    height: "489px"
                   }}
                 ></div>
                 <div
                   className={`${styles.line} position-absolute d-flex`}
-                  style={{ top: "0", left: "76%" }}
+                  style={{ top: "0", left: "70%" }}
                 ></div>
                 <div
                   className={`${styles.line} position-absolute d-flex`}
-                  style={{ top: "0", left: "84%" }}
+                  style={{ top: "0", left: "78%" }}
                 ></div>
                 <div
                   className={`${styles.line} position-absolute d-flex`}
-                  style={{ top: "0", left: "92%" }}
+                  style={{ top: "0", left: "86%" }}
                 ></div>
 
                 {/* header content start*/}
@@ -348,7 +392,7 @@ export const TemporaryResult = () => {
                   >
                     SUBJECTS
                   </div>
-                  <div
+                  {/* <div
                     className=" d-flex justify-content-center align-items-center text-center"
                     style={{
                       width: "6%",
@@ -358,7 +402,7 @@ export const TemporaryResult = () => {
                     }}
                   >
                     CREDIT HOUR
-                  </div>
+                  </div> */}
                   <div
                     className=" d-flex justify-content-center align-items-center text-center"
                     style={{
@@ -368,7 +412,7 @@ export const TemporaryResult = () => {
                   >
                     <div className="d-flex flex-column w-100">
                       <div style={{ borderBottom: "1px solid black" }}>
-                        OBTAINED MARKS
+                        OBTAINED GRADE
                       </div>
                       <div className="d-flex h-100">
                         <div className="w-50">TH</div>
@@ -403,8 +447,7 @@ export const TemporaryResult = () => {
                     style={{
                       width: "8%",
                       height: "110px",
-                      writingMode: "vertical-rl",
-                      transform: "scale(-1)",
+                      marginLeft: "23px"
                     }}
                   >
                     REMARKS
@@ -445,6 +488,17 @@ export const TemporaryResult = () => {
                   </div>
                 </div>
               </div>
+               <div style={{ paddingLeft: "30px" }}>
+                <div className={`${styles.gpa} d-flex align-items-center`}>
+                  REMARKS:
+                  <div
+                    className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
+                    style={{ order: "-1", fontWeight: "900" }}
+                  >
+                    {arg?.attendance ? arg.attendance : "N/A"}
+                  </div>
+                </div>
+              </div>
               <div>
                 <div className={`${styles.gpa} d-flex align-items-center`}>
                   GRADE POINT AVERAGE (GPA):
@@ -455,18 +509,18 @@ export const TemporaryResult = () => {
                     {avgGPA}
                   </div>
                 </div>
-                {/* <div
+                <div
                   className={`${styles.gpa} d-flex align-items-center`}
-                  style={{ marginBottom: "48px" }}
+                  // style={{ marginBottom: "10px"}}
                 >
-                  PERCENTAGE:
+                  RANK:
                   <div
                     className={`${styles.bmFont} d-flex justify-content-center align-items-center `}
                     style={{ order: "-1", fontWeight: "900" }}
                   >
                     {arg?.percentage}%
                   </div>
-                </div> */}
+                </div>
               </div>
             </div>
             <div
