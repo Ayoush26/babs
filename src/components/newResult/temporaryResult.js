@@ -7,12 +7,15 @@ import logo from "./../../images/logo.png";
 import styles from "./temporaryResult.module.css";
 import grade from "../../util/grade";
 import graderemarks from "../../util/graderemarks";
+import gpatoremarks from "../../util/gpatoremarks";
 
 export const TemporaryResult = () => {
   const [result, setResult] = useState({
     term: "",
     year: "",
     name: "",
+    rank1: "",
+    rank2: ""
   });
 
   const slug = useLocation();
@@ -25,59 +28,113 @@ export const TemporaryResult = () => {
           httpClient.get(`/marksheet/${slug.search.split("&")[1]}`),
         ]);
 
-        //temporary fix for class 3
-        if (slug.search.split("&")[1] === "3") {
-          const reorderMarks = (marksData) => {
-            const desiredOrder = [
-              "Wonder",
-              "Nepali",
-              "Maths",
-              "Science",
-              " Samajik",
-              "Grammar",
-              "GK",
-            ];
-            const sortedMarks = {};
 
-            desiredOrder.forEach((subject) => {
-              if (marksData[subject]) {
-                sortedMarks[subject] = marksData[subject];
+
+        // Deep copy of the marksheet array
+
+
+        const students = JSON.parse(JSON.stringify(marksheetRes.data.data));
+        students.forEach(student => {
+          const marksInfo = student.marksInfo;
+          const subjects = Object.keys(marksInfo);
+
+          let totalGradePoint = 0;
+          let totalCredit = 0;
+
+          subjects.forEach(subject => {
+            const info = marksInfo[subject];
+            const credit = info.fullMarks === "50" ? 2 : 4;
+            totalCredit += credit;
+
+            if (info.fullMarks === "Grade") {
+              // Convert grade to GPA and weight by credit
+              totalGradePoint += gradetoGPA(info.grade) * credit;
+            } else {
+              // Sum exam and test marks if any
+              const examMarks = +info.exam || 0;
+              const testMarks = +info.test || 0;
+              const sumMarks = examMarks + testMarks;
+
+              const gradePoint = mpg(sumMarks, +info.fullMarks).gradePoint;
+              totalGradePoint += gradePoint * credit;
+            }
+          });
+
+          student.gpa = totalCredit ? +(totalGradePoint / totalCredit).toFixed(2) : 0;
+        });
+        students.sort((a, b) => b.gpa - a.gpa);
+
+        // Assign dense ranks based on GPA (1,1,2,3,...)
+        let prevGpa = null;
+        let rank = 0;
+
+        for (let i = 0; i < students.length; i++) {
+          if (students[i].gpa !== prevGpa) {
+            rank += 1;
+          }
+          students[i].rank = rank;
+          prevGpa = students[i].gpa;
+        }
+        //temporary fix for subject reorder for nursey remove this next time 
+        if (slug.search.split("&")[1] === "Nursery") {
+          marksheetRes.data.data.forEach(student => {
+
+            const marksInfo = student.marksInfo;
+            const reorderedMarksInfo = {};
+
+            // Put English first if exists
+            if (marksInfo.English) {
+              reorderedMarksInfo.English = marksInfo.English;
+            }
+
+            // Then Nepali second if exists
+            if (marksInfo.Nepali) {
+              reorderedMarksInfo.Nepali = marksInfo.Nepali;
+            }
+
+            // Then Maths third if exists
+            if (marksInfo.Maths) {
+              reorderedMarksInfo.Maths = marksInfo.Maths;
+            }
+
+            // Then add other subjects except English, Nepali, Maths in their original order
+            Object.keys(marksInfo).forEach(subject => {
+              if (subject !== "English" && subject !== "Nepali" && subject !== "Maths") {
+                reorderedMarksInfo[subject] = marksInfo[subject];
               }
             });
 
-            return sortedMarks;
-          };
+            // Replace marksInfo with reordered one
+            student.marksInfo = reorderedMarksInfo;
 
-          setResult((prev) => ({
-            ...settingsRes.data.settings,
-            result1: {
-              ...marksheetRes.data.data[+slug.search.split("&")[2] - 1],
-              marksInfo: reorderMarks(
-                marksheetRes.data.data[+slug.search.split("&")[2] - 1].marksInfo
-              ),
-            },
-            result2: {
-              ...marksheetRes.data.data[+slug.search.split("&")[2]],
-              marksInfo: reorderMarks(
-                marksheetRes.data.data[+slug.search.split("&")[2]].marksInfo
-              ),
-            },
-          }));
-        } else {
-          setResult((prev) => ({
-            ...settingsRes.data.settings,
-            result1: marksheetRes.data.data[+slug.search.split("&")[2] - 1],
-            result2: marksheetRes.data.data[+slug.search.split("&")[2]],
-          }));
+          });
+
+        }
+        const index1 = +slug.search.split("&")[2] - 1;
+        const index2 = +slug.search.split("&")[2];
+        // Original students from unmodified data
+        const student1Original = marksheetRes.data.data[index1];
+        const student2Original = marksheetRes.data.data[index2];
+
+        function findRankByRoll(roll) {
+          const student = students.find(s => s.Roll === roll);
+          return student ? student.rank : null; // null if not found
         }
 
-        //remove temporary fix and then use this instead
-        // Update state first
-        // setResult((prev) => ({
-        //   ...settingsRes.data.settings,
-        //   result1: marksheetRes.data.data[+slug.search.split("&")[2] - 1],
-        //   result2: marksheetRes.data.data[+slug.search.split("&")[2]],
-        // }));
+        const rank1 = findRankByRoll(student1Original.Roll);
+        const rank2 = findRankByRoll(student2Original.Roll);
+
+
+
+        setResult((prev) => ({
+          ...settingsRes.data.settings,
+          result1: marksheetRes.data.data[+slug.search.split("&")[2] - 1],
+          result2: marksheetRes.data.data[+slug.search.split("&")[2]],
+          rank1,
+          rank2
+        }));
+
+
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
@@ -151,7 +208,7 @@ export const TemporaryResult = () => {
         <div
           className=" d-flex pl-5 align-items-center text-center"
           style={{
-            width: "48%",
+            width: "42%",
             paddingTop: "3px",
           }}
         >
@@ -215,9 +272,9 @@ export const TemporaryResult = () => {
         <div
           className={`d-flex justify-content-center align-items-center text-center ${styles.remarks}`}
           style={{
-            width: "13%",
+            width: "18%",
             paddingTop: "3px",
-            paddingLeft:"14px"
+            paddingLeft: "15px"
           }}
         >
           {remarks(marksInfo)}
@@ -226,7 +283,7 @@ export const TemporaryResult = () => {
     );
   };
 
-  const temporaryResultJSX = (arg) => {
+  const temporaryResultJSX = (arg, rank) => {
     let avgGPA = "";
     if (arg) {
       const subjects = Object.keys(arg.marksInfo);
@@ -272,24 +329,7 @@ export const TemporaryResult = () => {
               opacity: "0.2",
             }}
           >
-            <div style={{ flex: "auto", paddingLeft: "40px" }}>
-              <h1 className={styles.h1}>S</h1>
-            </div>
-            <div style={{ flex: "auto" }}>
-              <h1 className={styles.h1}>C</h1>
-            </div>
-            <div style={{ flex: "auto" }}>
-              <h1 className={styles.h1}>H</h1>
-            </div>
-            <div style={{ flex: "auto" }}>
-              <h1 className={styles.h1}>O</h1>
-            </div>
-            <div style={{ flex: "auto" }}>
-              <h1 className={styles.h1}>O</h1>
-            </div>
-            <div style={{ flex: "auto" }}>
-              <h1 className={styles.h1}>L</h1>
-            </div>
+
           </div>
         </div>
         <div className={styles.content}>
@@ -308,7 +348,7 @@ export const TemporaryResult = () => {
                 className={`${styles.h2} pb-2`}
                 style={{ textTransform: "uppercase" }}
               >
-                {result.term} EXAMINATION {result.year} BS
+                {result.term} TERM EXAMINATION {result.year} BS
               </h2>
               <h1 className={styles.h1}>GRADE-SHEET</h1>
             </div>
@@ -345,29 +385,29 @@ export const TemporaryResult = () => {
                 ></div>
                 <div
                   className={`${styles.line} position-absolute d-flex`}
-                  style={{ top: "0", left: "54%" }}
+                  style={{ top: "0", left: "48%" }}
                 ></div>
 
                 <div
                   className={`position-absolute d-flex`}
                   style={{
                     top: "71px",
-                    left: "62%",
+                    left: "56%",
                     borderLeft: "1px solid black",
                     height: "489px"
                   }}
                 ></div>
                 <div
                   className={`${styles.line} position-absolute d-flex`}
-                  style={{ top: "0", left: "70%" }}
+                  style={{ top: "0", left: "64%" }}
                 ></div>
                 <div
                   className={`${styles.line} position-absolute d-flex`}
-                  style={{ top: "0", left: "78%" }}
+                  style={{ top: "0", left: "72%" }}
                 ></div>
                 <div
                   className={`${styles.line} position-absolute d-flex`}
-                  style={{ top: "0", left: "86%" }}
+                  style={{ top: "0", left: "80%" }}
                 ></div>
 
                 {/* header content start*/}
@@ -386,7 +426,7 @@ export const TemporaryResult = () => {
                   <div
                     className=" d-flex justify-content-center align-items-center text-center"
                     style={{
-                      width: "48%",
+                      width: "42%",
                       height: "110px",
                     }}
                   >
@@ -447,7 +487,7 @@ export const TemporaryResult = () => {
                     style={{
                       width: "8%",
                       height: "110px",
-                      marginLeft: "23px"
+                      marginLeft: "44px"
                     }}
                   >
                     REMARKS
@@ -488,20 +528,20 @@ export const TemporaryResult = () => {
                   </div>
                 </div>
               </div>
-               <div style={{ paddingLeft: "30px" }}>
+              <div style={{ paddingLeft: "30px" }}>
                 <div className={`${styles.gpa} d-flex align-items-center`}>
                   REMARKS:
                   <div
-                    className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
-                    style={{ order: "-1", fontWeight: "900" }}
+                    className={`${styles.remarks} d-flex justify-content-center align-items-center `}
+                    style={{ order: "-1", fontWeight: "900", fontSize: "1.22rem", paddingTop: "0.1rem" }}
                   >
-                    {arg?.attendance ? arg.attendance : "N/A"}
+                    {gpatoremarks(avgGPA).toUpperCase()}
                   </div>
                 </div>
               </div>
               <div>
                 <div className={`${styles.gpa} d-flex align-items-center`}>
-                  GRADE POINT AVERAGE (GPA):
+                  GRADE POINT AVERAGE:
                   <div
                     className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
                     style={{ order: "-1", fontWeight: "900" }}
@@ -511,26 +551,26 @@ export const TemporaryResult = () => {
                 </div>
                 <div
                   className={`${styles.gpa} d-flex align-items-center`}
-                  // style={{ marginBottom: "10px"}}
+                // style={{ marginBottom: "10px"}}
                 >
                   RANK:
                   <div
                     className={`${styles.bmFont} d-flex justify-content-center align-items-center `}
                     style={{ order: "-1", fontWeight: "900" }}
                   >
-                    {arg?.percentage}%
+                    {rank}
                   </div>
                 </div>
               </div>
             </div>
             <div
               className={` ${styles.sign} row`}
-              style={{ marginTop: "70px", marginLeft: "30px" }}
+              style={{ marginTop: "120px", marginLeft: "30px" }}
             >
               <div className="col-md-3 bt">
                 <p
                   className={`${styles.p} text-center`}
-                  style={{ borderTop: "1px solid black", paddingTop: "10px" }}
+                  style={{ borderTop: "1px solid black", paddingTop: "10px", fontSize:"20px" }}
                 >
                   Class Teacher
                 </p>
@@ -542,7 +582,8 @@ export const TemporaryResult = () => {
                   style={{
                     borderTop: "1px solid black",
                     paddingTop: "10px",
-                    marginLeft: "8px",
+                    marginRight:"5px",
+                    fontSize:"20px"
                   }}
                 >
                   School's Seal
@@ -553,7 +594,7 @@ export const TemporaryResult = () => {
               <div className="col-md-3 bt">
                 <p
                   className={`${styles.p} text-center`}
-                  style={{ borderTop: "1px solid black", paddingTop: "10px" }}
+                  style={{ borderTop: "1px solid black", paddingTop: "10px",fontSize:"20px", marginRight:"40px" }}
                 >
                   Principal
                 </p>
@@ -575,8 +616,8 @@ export const TemporaryResult = () => {
         }
       }
     >
-      {temporaryResultJSX(result.result1)}
-      {result.result2 && temporaryResultJSX(result.result2)}
+      {temporaryResultJSX(result.result1, result.rank1)}
+      {result.result2 && temporaryResultJSX(result.result2, result.rank2)}
     </div>
   );
 };

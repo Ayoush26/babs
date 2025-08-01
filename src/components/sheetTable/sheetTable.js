@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import "./sheetTable.css";
 import logo from "./../../images/logo.png";
 import grade from "./../../util/grade";
+import gradetoGPA from "../../util/gradetoGPA";
+import mpg from "../../util/mpg";
 export class SheetTable extends Component {
   constructor() {
     super();
@@ -52,7 +54,49 @@ export class SheetTable extends Component {
 
   render() {
     console.log(this.state);
-    const tableContent = this.state.results.map((result, index) => {
+    const students = JSON.parse(JSON.stringify(this.state.results));
+    students.forEach(student => {
+      const marksInfo = student.marksInfo;
+      const subjects = Object.keys(marksInfo);
+
+      let totalGradePoint = 0;
+      let totalCredit = 0;
+
+      subjects.forEach(subject => {
+        const info = marksInfo[subject];
+        const credit = info.fullMarks === "50" ? 2 : 4;
+        totalCredit += credit;
+
+        if (info.fullMarks === "Grade") {
+          totalGradePoint += gradetoGPA(info.grade) * credit;
+        } else {
+          const examMarks = +info.exam || 0;
+          const testMarks = +info.test || 0;
+          const sumMarks = examMarks + testMarks;
+
+          const gradePoint = mpg(sumMarks, +info.fullMarks).gradePoint;
+          totalGradePoint += gradePoint * credit;
+        }
+      });
+
+      student.gpa = totalCredit ? +(totalGradePoint / totalCredit).toFixed(2) : 0;
+    });
+    students.sort((a, b) => b.gpa - a.gpa);
+
+    // Assign dense ranks based on GPA (1,1,2,3,...)
+    let prevGpa = null;
+    let rank = 0;
+
+    for (let i = 0; i < students.length; i++) {
+      if (students[i].gpa !== prevGpa) {
+        rank += 1;
+      }
+      students[i].rank = rank;
+      prevGpa = students[i].gpa;
+    }
+    students.sort((a, b) => Number(a.Roll) - Number(b.Roll));
+    
+    const tableContent = students.map((result, index) => {
       return (
         <tr key={result._id}>
           <td className="tableDimension">{result.Roll}</td>
@@ -65,15 +109,16 @@ export class SheetTable extends Component {
                   ? result.marksInfo[subject].fullMarks === "Grade"
                     ? result.marksInfo[subject].grade
                     : +result.marksInfo[subject].exam +
-                      (result.marksInfo[subject].test
-                        ? +result.marksInfo[subject].test
-                        : 0)
-                  : "Undefined"}
+                    (result.marksInfo[subject].test
+                      ? +result.marksInfo[subject].test
+                      : 0)
+                  : "NG"}
               </td>
             );
           })}
-          <td className="tableDimension">{result.percentage}</td>
+          <td className="tableDimension">{result.rank}</td>
           <td className="tableDimension">{grade(result.percentage)}</td>
+          <td className="tableDimension">{result.gpa}</td>
         </tr>
       );
     });
@@ -90,7 +135,7 @@ export class SheetTable extends Component {
               DIP PATH, DHARAN-9, SUNSARI, NEPAL
             </h5>
             <h4 className="text-center p-2 font-weight-bold">
-              MARK SHEET OF FINAL EXAM, 2081 BS
+              MARK SHEET OF FIRST TERM EXAM, 2082 BS
             </h4>
 
             <div className="row p-2">
@@ -121,8 +166,9 @@ export class SheetTable extends Component {
                     </th>
                   );
                 })}
-                <th className="tableHead">%</th>
+                <th className="tableHead">Rank</th>
                 <th className="tableHead">Grade</th>
+                <th className="tableHead">GPA</th>
               </tr>
             </thead>
             <tbody>{tableContent}</tbody>

@@ -137,3 +137,26 @@
   font-family: "Luxurious Roman", serif;
 }
 
+@media print {
+  /* Ensure the container keeps flex row on print */
+  .sign {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+  }
+  
+  /* If .sign is inside a .row or other flex container, 
+     you may need to enforce row on those as well */
+  .row {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+  }
+
+  /* Prevent columns from shrinking or stacking */
+  .col-md-3, .col-md-1 {
+    flex: 0 0 auto !important;
+    max-width: auto !important;
+  }
+}
+
