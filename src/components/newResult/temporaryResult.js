@@ -8,6 +8,7 @@ import styles from "./temporaryResult.module.css";
 import grade from "../../util/grade";
 import graderemarks from "../../util/graderemarks";
 import gpatoremarks from "../../util/gpatoremarks";
+import gradefromgpa from "../../util/gradefromgpa";
 
 export const TemporaryResult = () => {
   const [result, setResult] = useState({
@@ -208,13 +209,13 @@ export const TemporaryResult = () => {
         <div
           className=" d-flex pl-5 align-items-center text-center"
           style={{
-            width: "42%",
+            width: "36%",
             paddingTop: "3px",
           }}
         >
           {subject}
         </div>
-        {/* <div
+        <div
           className=" d-flex justify-content-center align-items-center text-center"
           style={{
             width: "6%",
@@ -222,7 +223,7 @@ export const TemporaryResult = () => {
           }}
         >
           {marksInfo.fullMarks === "50" ? 2 : 4}
-        </div> */}
+        </div>
         <div
           className=" d-flex justify-content-center align-items-center text-center"
           style={{
@@ -383,6 +384,10 @@ export const TemporaryResult = () => {
                   className={`${styles.line} position-absolute d-flex`}
                   style={{ top: "0", left: "6%" }}
                 ></div>
+                 <div
+                  className={`${styles.line} position-absolute d-flex`}
+                  style={{ top: "0", left: "41.5%" }}
+                ></div>
                 <div
                   className={`${styles.line} position-absolute d-flex`}
                   style={{ top: "0", left: "48%" }}
@@ -426,13 +431,13 @@ export const TemporaryResult = () => {
                   <div
                     className=" d-flex justify-content-center align-items-center text-center"
                     style={{
-                      width: "42%",
+                      width: "36%",
                       height: "110px",
                     }}
                   >
                     SUBJECTS
                   </div>
-                  {/* <div
+                  <div
                     className=" d-flex justify-content-center align-items-center text-center"
                     style={{
                       width: "6%",
@@ -442,7 +447,7 @@ export const TemporaryResult = () => {
                     }}
                   >
                     CREDIT HOUR
-                  </div> */}
+                  </div>
                   <div
                     className=" d-flex justify-content-center align-items-center text-center"
                     style={{
@@ -517,7 +522,7 @@ export const TemporaryResult = () => {
             </div>
             {/*Table end*/}
             <div className={styles.gradeInfo}>
-              <div style={{ paddingLeft: "30px" }}>
+              <div style={{ paddingLeft: "10px" }}>
                 <div className={`${styles.gpa} d-flex align-items-center`}>
                   ATTENDANCE:
                   <div
@@ -528,7 +533,7 @@ export const TemporaryResult = () => {
                   </div>
                 </div>
               </div>
-              <div style={{ paddingLeft: "30px" }}>
+              <div style={{ paddingLeft: "10px" }}>
                 <div className={`${styles.gpa} d-flex align-items-center`}>
                   REMARKS:
                   <div
@@ -546,7 +551,7 @@ export const TemporaryResult = () => {
                     className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
                     style={{ order: "-1", fontWeight: "900" }}
                   >
-                    {avgGPA}
+                    {avgGPA} {`(${gradefromgpa(+avgGPA)})`}
                   </div>
                 </div>
                 <div
