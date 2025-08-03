@@ -55,6 +55,9 @@ export class SheetTable extends Component {
   render() {
     console.log(this.state);
     const students = JSON.parse(JSON.stringify(this.state.results));
+    const currentClass = this.state.class;
+
+    // 1. Calculate GPA for all students
     students.forEach(student => {
       const marksInfo = student.marksInfo;
       const subjects = Object.keys(marksInfo);
@@ -81,21 +84,30 @@ export class SheetTable extends Component {
 
       student.gpa = totalCredit ? +(totalGradePoint / totalCredit).toFixed(2) : 0;
     });
-    students.sort((a, b) => b.gpa - a.gpa);
 
-    // Assign dense ranks based on GPA (1,1,2,3,...)
-    let prevGpa = null;
+    // 2. Decide the sort/rank key
+    const percentageClasses = ["Nursery", "KG", "1", "2", "3"];
+    const sortKey = percentageClasses.includes(currentClass) ? "percentage" : "gpa";
+
+    // 3. Sort by the correct field
+    students.sort((a, b) => b[sortKey] - a[sortKey]);
+
+    // 4. Assign dense rank by the sort field
+    let prevValue = null;
     let rank = 0;
 
     for (let i = 0; i < students.length; i++) {
-      if (students[i].gpa !== prevGpa) {
+      if (students[i][sortKey] !== prevValue) {
         rank += 1;
       }
       students[i].rank = rank;
-      prevGpa = students[i].gpa;
+      prevValue = students[i][sortKey];
     }
+
+
+
     students.sort((a, b) => Number(a.Roll) - Number(b.Roll));
-    
+
     const tableContent = students.map((result, index) => {
       return (
         <tr key={result._id}>

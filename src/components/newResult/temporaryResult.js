@@ -35,6 +35,8 @@ export const TemporaryResult = () => {
 
 
         const students = JSON.parse(JSON.stringify(marksheetRes.data.data));
+        const currentClass = slug.search.split("&")[1];
+
         students.forEach(student => {
           const marksInfo = student.marksInfo;
           const subjects = Object.keys(marksInfo);
@@ -48,14 +50,11 @@ export const TemporaryResult = () => {
             totalCredit += credit;
 
             if (info.fullMarks === "Grade") {
-              // Convert grade to GPA and weight by credit
               totalGradePoint += gradetoGPA(info.grade) * credit;
             } else {
-              // Sum exam and test marks if any
               const examMarks = +info.exam || 0;
               const testMarks = +info.test || 0;
               const sumMarks = examMarks + testMarks;
-
               const gradePoint = mpg(sumMarks, +info.fullMarks).gradePoint;
               totalGradePoint += gradePoint * credit;
             }
@@ -63,19 +62,26 @@ export const TemporaryResult = () => {
 
           student.gpa = totalCredit ? +(totalGradePoint / totalCredit).toFixed(2) : 0;
         });
-        students.sort((a, b) => b.gpa - a.gpa);
 
-        // Assign dense ranks based on GPA (1,1,2,3,...)
-        let prevGpa = null;
+        // Decide whether to sort by GPA or percentage based on class:
+        const percentageClasses = ["Nursery", "KG", "1", "2", "3"];
+        const sortKey = percentageClasses.includes(currentClass) ? "percentage" : "gpa";
+
+        // Sort with chosen key:
+        students.sort((a, b) => b[sortKey] - a[sortKey]);
+
+        // Dense ranking according to chosen field:
+        let prevValue = null;
         let rank = 0;
 
         for (let i = 0; i < students.length; i++) {
-          if (students[i].gpa !== prevGpa) {
+          if (students[i][sortKey] !== prevValue) {
             rank += 1;
           }
           students[i].rank = rank;
-          prevGpa = students[i].gpa;
+          prevValue = students[i][sortKey];
         }
+
         //temporary fix for subject reorder for nursey remove this next time 
         if (slug.search.split("&")[1] === "Nursery") {
           marksheetRes.data.data.forEach(student => {
@@ -111,6 +117,8 @@ export const TemporaryResult = () => {
           });
 
         }
+
+
         const index1 = +slug.search.split("&")[2] - 1;
         const index2 = +slug.search.split("&")[2];
         // Original students from unmodified data
@@ -384,7 +392,7 @@ export const TemporaryResult = () => {
                   className={`${styles.line} position-absolute d-flex`}
                   style={{ top: "0", left: "6%" }}
                 ></div>
-                 <div
+                <div
                   className={`${styles.line} position-absolute d-flex`}
                   style={{ top: "0", left: "41.5%" }}
                 ></div>
@@ -575,7 +583,7 @@ export const TemporaryResult = () => {
               <div className="col-md-3 bt">
                 <p
                   className={`${styles.p} text-center`}
-                  style={{ borderTop: "1px solid black", paddingTop: "10px", fontSize:"20px" }}
+                  style={{ borderTop: "1px solid black", paddingTop: "10px", fontSize: "20px" }}
                 >
                   Class Teacher
                 </p>
@@ -587,8 +595,8 @@ export const TemporaryResult = () => {
                   style={{
                     borderTop: "1px solid black",
                     paddingTop: "10px",
-                    marginRight:"5px",
-                    fontSize:"20px"
+                    marginRight: "5px",
+                    fontSize: "20px"
                   }}
                 >
                   School's Seal
@@ -599,7 +607,7 @@ export const TemporaryResult = () => {
               <div className="col-md-3 bt">
                 <p
                   className={`${styles.p} text-center`}
-                  style={{ borderTop: "1px solid black", paddingTop: "10px",fontSize:"20px", marginRight:"40px" }}
+                  style={{ borderTop: "1px solid black", paddingTop: "10px", fontSize: "20px", marginRight: "40px" }}
                 >
                   Principal
                 </p>
