@@ -87,8 +87,10 @@ export class SheetTable extends Component {
 
 
     // 2. Decide the sort/rank key
-    const percentageClasses = ["Nursery", "KG", "1", "2", "3"];
-    const sortKey = percentageClasses.includes(currentClass) ? "percentage" : "gpa";
+    // const percentageClasses = ["Nursery", "KG", "1", "2", "3"];
+    // const sortKey = percentageClasses.includes(currentClass) ? "percentage" : "gpa";
+
+    const sortKey = "percentage";
 
     // 3. Sort by the correct field
     students.sort((a, b) => b[sortKey] - a[sortKey]);
@@ -132,6 +134,7 @@ export class SheetTable extends Component {
           <td className="tableDimension">{result.rank}</td>
           <td className="tableDimension">{grade(result.percentage)}</td>
           <td className="tableDimension">{result.gpa}</td>
+          <td className="tableDimension">{result.percentage}</td>
         </tr>
       );
     });
@@ -182,6 +185,7 @@ export class SheetTable extends Component {
                 <th className="tableHead">Rank</th>
                 <th className="tableHead">Grade</th>
                 <th className="tableHead">GPA</th>
+                <th className="tableHead">%</th>
               </tr>
             </thead>
             <tbody>{tableContent}</tbody>

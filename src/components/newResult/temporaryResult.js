@@ -66,9 +66,9 @@ export const TemporaryResult = () => {
 
 
         // Decide whether to sort by GPA or percentage based on class:
-        const percentageClasses = ["Nursery", "KG", "1", "2", "3"];
-        const sortKey = percentageClasses.includes(currentClass) ? "percentage" : "gpa";
-
+        // const percentageClasses = ["Nursery", "KG", "1", "2", "3"];
+        // const sortKey = percentageClasses.includes(currentClass) ? "percentage" : "gpa";
+        const sortKey = "percentage";
         // Sort with chosen key:
         students.sort((a, b) => b[sortKey] - a[sortKey]);
 
