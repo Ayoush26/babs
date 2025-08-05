@@ -46,22 +46,24 @@ export const TemporaryResult = () => {
 
           subjects.forEach(subject => {
             const info = marksInfo[subject];
+            // Skip if fullMarks is "Grade"
+            if (info.fullMarks === "Grade") {
+              return;
+            }
             const credit = info.fullMarks === "50" ? 2 : 4;
             totalCredit += credit;
 
-            if (info.fullMarks === "Grade") {
-              totalGradePoint += gradetoGPA(info.grade) * credit;
-            } else {
-              const examMarks = +info.exam || 0;
-              const testMarks = +info.test || 0;
-              const sumMarks = examMarks + testMarks;
-              const gradePoint = mpg(sumMarks, +info.fullMarks).gradePoint;
-              totalGradePoint += gradePoint * credit;
-            }
+            const examMarks = +info.exam || 0;
+            const testMarks = +info.test || 0;
+            const sumMarks = examMarks + testMarks;
+
+            const gradePoint = mpg(sumMarks, +info.fullMarks).gradePoint;
+            totalGradePoint += gradePoint * credit;
           });
 
           student.gpa = totalCredit ? +(totalGradePoint / totalCredit).toFixed(2) : 0;
         });
+
 
         // Decide whether to sort by GPA or percentage based on class:
         const percentageClasses = ["Nursery", "KG", "1", "2", "3"];
@@ -239,7 +241,7 @@ export const TemporaryResult = () => {
             paddingTop: "3px",
           }}
         >
-          {marksInfo.fullMarks === "Grade" ? marksInfo.grade : mpgCAll(marksInfo)}
+          {marksInfo.fullMarks === "Grade" || mpgCAll(marksInfo)}
         </div>
         <div
           className=" d-flex justify-content-center align-items-center text-center"
@@ -546,20 +548,20 @@ export const TemporaryResult = () => {
                   REMARKS:
                   <div
                     className={`${styles.remarks} d-flex justify-content-center align-items-center `}
-                    style={{ order: "-1", fontWeight: "900", fontSize: "1.22rem", paddingTop: "0.1rem" }}
+                    style={{ order: "-1", fontWeight: "900", fontSize: "1.22rem", paddingTop: "0.1rem", flexWrap: 'nowrap', whiteSpace: 'nowrap' }}
                   >
                     {gpatoremarks(avgGPA).toUpperCase()}
                   </div>
                 </div>
               </div>
               <div>
-                <div className={`${styles.gpa} d-flex align-items-center`}>
+                <div className={`${styles.gpa} d-flex align-items-center`} style={{ flexWrap: 'nowrap', whiteSpace: 'nowrap' }} >
                   GRADE POINT AVERAGE:
                   <div
                     className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
-                    style={{ order: "-1", fontWeight: "900" }}
+                    style={{ order: "-1", fontWeight: "900", flexWrap: 'nowrap', whiteSpace: 'nowrap' }}
                   >
-                    {avgGPA} {`(${gradefromgpa(+avgGPA)})`}
+                    {avgGPA}  {`(${gradefromgpa(+avgGPA)})`}
                   </div>
                 </div>
                 <div

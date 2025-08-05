@@ -67,23 +67,24 @@ export class SheetTable extends Component {
 
       subjects.forEach(subject => {
         const info = marksInfo[subject];
+        // Skip if fullMarks is "Grade"
+        if (info.fullMarks === "Grade") {
+          return;
+        }
         const credit = info.fullMarks === "50" ? 2 : 4;
         totalCredit += credit;
 
-        if (info.fullMarks === "Grade") {
-          totalGradePoint += gradetoGPA(info.grade) * credit;
-        } else {
-          const examMarks = +info.exam || 0;
-          const testMarks = +info.test || 0;
-          const sumMarks = examMarks + testMarks;
+        const examMarks = +info.exam || 0;
+        const testMarks = +info.test || 0;
+        const sumMarks = examMarks + testMarks;
 
-          const gradePoint = mpg(sumMarks, +info.fullMarks).gradePoint;
-          totalGradePoint += gradePoint * credit;
-        }
+        const gradePoint = mpg(sumMarks, +info.fullMarks).gradePoint;
+        totalGradePoint += gradePoint * credit;
       });
 
       student.gpa = totalCredit ? +(totalGradePoint / totalCredit).toFixed(2) : 0;
     });
+
 
     // 2. Decide the sort/rank key
     const percentageClasses = ["Nursery", "KG", "1", "2", "3"];
