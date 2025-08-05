@@ -29,15 +29,13 @@ export const TemporaryResult = () => {
           httpClient.get(`/marksheet/${slug.search.split("&")[1]}`),
         ]);
 
-
-
-        // Deep copy of the marksheet array
-
-
-        const students = JSON.parse(JSON.stringify(marksheetRes.data.data));
         const currentClass = slug.search.split("&")[1];
 
-        students.forEach(student => {
+        // 1. Work entirely on updatedMarksheet
+        const updatedMarksheet = JSON.parse(JSON.stringify(marksheetRes.data.data));
+
+        // 2. GPA calculation
+        updatedMarksheet.forEach(student => {
           const marksInfo = student.marksInfo;
           const subjects = Object.keys(marksInfo);
 
@@ -47,16 +45,13 @@ export const TemporaryResult = () => {
           subjects.forEach(subject => {
             const info = marksInfo[subject];
             // Skip if fullMarks is "Grade"
-            if (info.fullMarks === "Grade") {
-              return;
-            }
+            if (info.fullMarks === "Grade") return;
             const credit = info.fullMarks === "50" ? 2 : 4;
             totalCredit += credit;
 
             const examMarks = +info.exam || 0;
             const testMarks = +info.test || 0;
             const sumMarks = examMarks + testMarks;
-
             const gradePoint = mpg(sumMarks, +info.fullMarks).gradePoint;
             totalGradePoint += gradePoint * credit;
           });
@@ -64,18 +59,38 @@ export const TemporaryResult = () => {
           student.gpa = totalCredit ? +(totalGradePoint / totalCredit).toFixed(2) : 0;
         });
 
+        // 3. (Temporary) Subject order fix for Nursery **on updatedMarksheet**
+        if (currentClass === "Nursery") {
+          updatedMarksheet.forEach(student => {
+            const marksInfo = student.marksInfo;
+            const reorderedMarksInfo = {};
 
-        // Decide whether to sort by GPA or percentage based on class:
-        // const percentageClasses = ["Nursery", "KG", "1", "2", "3"];
-        // const sortKey = percentageClasses.includes(currentClass) ? "percentage" : "gpa";
-        const sortKey = "percentage";
-        // Sort with chosen key:
+            if (marksInfo.English) reorderedMarksInfo.English = marksInfo.English;
+            if (marksInfo.Nepali) reorderedMarksInfo.Nepali = marksInfo.Nepali;
+            if (marksInfo.Maths) reorderedMarksInfo.Maths = marksInfo.Maths;
+
+            Object.keys(marksInfo).forEach(subject => {
+              if (
+                subject !== "English" &&
+                subject !== "Nepali" &&
+                subject !== "Maths"
+              ) {
+                reorderedMarksInfo[subject] = marksInfo[subject];
+              }
+            });
+
+            student.marksInfo = reorderedMarksInfo;
+          });
+        }
+
+        // 4. Ranking
+        const students = JSON.parse(JSON.stringify(updatedMarksheet));
+        const sortKey = "percentage"; // or your GPA/percentage logic
         students.sort((a, b) => b[sortKey] - a[sortKey]);
 
-        // Dense ranking according to chosen field:
+        // Dense ranking
         let prevValue = null;
         let rank = 0;
-
         for (let i = 0; i < students.length; i++) {
           if (students[i][sortKey] !== prevValue) {
             rank += 1;
@@ -84,68 +99,27 @@ export const TemporaryResult = () => {
           prevValue = students[i][sortKey];
         }
 
-        //temporary fix for subject reorder for nursey remove this next time 
-        if (slug.search.split("&")[1] === "Nursery") {
-          marksheetRes.data.data.forEach(student => {
-
-            const marksInfo = student.marksInfo;
-            const reorderedMarksInfo = {};
-
-            // Put English first if exists
-            if (marksInfo.English) {
-              reorderedMarksInfo.English = marksInfo.English;
-            }
-
-            // Then Nepali second if exists
-            if (marksInfo.Nepali) {
-              reorderedMarksInfo.Nepali = marksInfo.Nepali;
-            }
-
-            // Then Maths third if exists
-            if (marksInfo.Maths) {
-              reorderedMarksInfo.Maths = marksInfo.Maths;
-            }
-
-            // Then add other subjects except English, Nepali, Maths in their original order
-            Object.keys(marksInfo).forEach(subject => {
-              if (subject !== "English" && subject !== "Nepali" && subject !== "Maths") {
-                reorderedMarksInfo[subject] = marksInfo[subject];
-              }
-            });
-
-            // Replace marksInfo with reordered one
-            student.marksInfo = reorderedMarksInfo;
-
-          });
-
-        }
-
-
+        // 5. Find original students by index in updatedMarksheet
         const index1 = +slug.search.split("&")[2] - 1;
         const index2 = +slug.search.split("&")[2];
-        // Original students from unmodified data
-        const student1Original = marksheetRes.data.data[index1];
-        const student2Original = marksheetRes.data.data[index2];
+        const student1Original = updatedMarksheet[index1];
+        const student2Original = updatedMarksheet[index2];
 
         function findRankByRoll(roll) {
           const student = students.find(s => s.Roll === roll);
-          return student ? student.rank : null; // null if not found
+          return student ? student.rank : null;
         }
 
         const rank1 = findRankByRoll(student1Original.Roll);
         const rank2 = findRankByRoll(student2Original.Roll);
 
-
-
-        setResult((prev) => ({
+        setResult(prev => ({
           ...settingsRes.data.settings,
-          result1: marksheetRes.data.data[+slug.search.split("&")[2] - 1],
-          result2: marksheetRes.data.data[+slug.search.split("&")[2]],
+          result1: student1Original,
+          result2: student2Original,
           rank1,
           rank2
         }));
-
-
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
@@ -153,6 +127,7 @@ export const TemporaryResult = () => {
 
     fetchData();
   }, [slug]);
+
 
   // Add this effect to handle print after state updates
   useEffect(() => {
@@ -274,8 +249,8 @@ export const TemporaryResult = () => {
           }}
         >
           {marksInfo.fullMarks === "Grade"
-            ? gradetoGPA(marksInfo.grade)
-            : mpg(
+
+            || mpg(
               +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
               marksInfo.fullMarks
             ).gradePoint}
@@ -295,27 +270,28 @@ export const TemporaryResult = () => {
   };
 
   const temporaryResultJSX = (arg, rank) => {
-    let avgGPA = "";
-    if (arg) {
-      const subjects = Object.keys(arg.marksInfo);
-      let totalGradePoint = 0;
-      let totalCredit = 0;
-      subjects.forEach((subject) => {
-        totalCredit += arg.marksInfo[subject].fullMarks === "50" ? 2 : 4;
-        totalGradePoint +=
-          arg.marksInfo[subject].fullMarks === "Grade"
-            ? +gradetoGPA(arg.marksInfo[subject].grade) * 4
-            : +mpg(
-              +arg.marksInfo[subject].exam +
-              (arg.marksInfo[subject].test
-                ? +arg.marksInfo[subject].test
-                : 0),
-              +arg.marksInfo[subject].fullMarks
-            ).gradePoint *
-            (arg.marksInfo[subject].fullMarks === "50" ? 2 : 4);
-      });
-      avgGPA = (totalGradePoint / totalCredit).toFixed(2);
-    }
+    console.log(arg)
+    // let avgGPA = "";
+    // if (arg) {
+    //   const subjects = Object.keys(arg.marksInfo);
+    //   let totalGradePoint = 0;
+    //   let totalCredit = 0;
+    //   subjects.forEach((subject) => {
+    //     totalCredit += arg.marksInfo[subject].fullMarks === "50" ? 2 : 4;
+    //     totalGradePoint +=
+    //       arg.marksInfo[subject].fullMarks === "Grade"
+    //         ? +gradetoGPA(arg.marksInfo[subject].grade) * 4
+    //         : +mpg(
+    //           +arg.marksInfo[subject].exam +
+    //           (arg.marksInfo[subject].test
+    //             ? +arg.marksInfo[subject].test
+    //             : 0),
+    //           +arg.marksInfo[subject].fullMarks
+    //         ).gradePoint *
+    //         (arg.marksInfo[subject].fullMarks === "50" ? 2 : 4);
+    //   });
+    //   avgGPA = (totalGradePoint / totalCredit).toFixed(2);
+    // }
     return (
       <div className={`${styles.wrapper} position-relative`}>
         <div className={`${styles.watermark} d-flex flex-column`}>
@@ -550,7 +526,7 @@ export const TemporaryResult = () => {
                     className={`${styles.remarks} d-flex justify-content-center align-items-center `}
                     style={{ order: "-1", fontWeight: "900", fontSize: "1.22rem", paddingTop: "0.1rem", flexWrap: 'nowrap', whiteSpace: 'nowrap' }}
                   >
-                    {gpatoremarks(avgGPA).toUpperCase()}
+                    {gpatoremarks(arg?.gpa).toUpperCase()}
                   </div>
                 </div>
               </div>
@@ -561,7 +537,7 @@ export const TemporaryResult = () => {
                     className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
                     style={{ order: "-1", fontWeight: "900", flexWrap: 'nowrap', whiteSpace: 'nowrap' }}
                   >
-                    {avgGPA}  {`(${gradefromgpa(+avgGPA)})`}
+                    {arg?.gpa}  {`(${gradefromgpa(+arg?.gpa)})`}
                   </div>
                 </div>
                 <div
@@ -620,6 +596,8 @@ export const TemporaryResult = () => {
       </div>
     );
   };
+
+  console.log(result)
 
   return (
     <div
