@@ -138,9 +138,17 @@ export const TemporaryResult = () => {
   }, [result]); // Runs when result changes
 
   const handleGradeMarks = (marksInfo) => {
+    const currentClass = slug.search.split("&")[1];
+
     if (!marksInfo.test) {
       return {
         obtainedMarks: +marksInfo.exam,
+        fullMarks: +marksInfo.fullMarks
+      }
+    }
+    if (currentClass === "9" || currentClass === "10") {
+      return {
+        obtainedMarks: ((+marksInfo.exam / 75) * 100),
         fullMarks: +marksInfo.fullMarks
       }
     }
@@ -162,8 +170,11 @@ export const TemporaryResult = () => {
   }
 
   const mpgCallTest = (marksInfo) => {
+    const currentClass = slug.search.split("&")[1];
+
     if (!marksInfo.test) return "";
     if (+marksInfo.fullMarks === 100) {
+    if (currentClass === "9" || currentClass === "10") return  mpg(+marksInfo.test * 2, 50).grade
       return mpg(marksInfo.test, 50).grade
     }
     return mpg((+marksInfo.test) * 2, 50).grade
