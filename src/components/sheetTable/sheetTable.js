@@ -132,7 +132,7 @@ export class SheetTable extends Component {
             );
           })}
           <td className="tableDimension">{result.rank}</td>
-          <td className="tableDimension">{grade(result.percentage)}</td>
+          <td className="tableDimension">{grade(+result.gpa)}</td>
           <td className="tableDimension">{result.gpa}</td>
           <td className="tableDimension">{result.percentage}</td>
         </tr>
