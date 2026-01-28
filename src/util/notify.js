@@ -1,10 +1,6 @@
-import toast from 'cogo-toast';
+import { toast } from 'react-hot-toast';
 
 export const notify = {
-    success: (msg)=>{
-       return toast.success(msg)
-    },
-    error: (msg)=>{
-       return toast.error(msg)
-    }
-}
+  success: (msg) => toast.success(msg),
+  error: (msg) => toast.error(msg)
+};
