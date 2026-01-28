@@ -3,10 +3,6 @@ import logo from './../../../images/logo.png';
 import './header.css';
 
 export class Header extends React.Component {
-    constructor() {
-        super();
-      
-    }
 
     clickHandler=()=>{
         this.props.sidebar();
