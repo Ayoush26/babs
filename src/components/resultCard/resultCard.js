@@ -1,5 +1,4 @@
 import './resultCard.css';
-import ReactWaterMark from 'react-watermark-component';
 import React from 'react';
 import logo from './../../images/logo.png';
 import { withRouter } from 'react-router-dom';
@@ -49,11 +48,7 @@ class ResultCardWithoutRouter extends React.Component {
         }
         return (<>
             <div className="">
-                {/* <ReactWaterMark waterMarkText={text}
-                    openSecurityDefense
-                    securityAlarm={beginAlarm}
-                    options={options}> */}
-
+               
 
                 <div style={{marginTop:'80px'}} className="wrapper row">
                     <div className="col-12">
@@ -180,7 +175,7 @@ class ResultCardWithoutRouter extends React.Component {
                     </div>
                 </div>
 
-                {/* </ReactWaterMark> */}
+    
                 <br></br>
                 <br></br>
                 <br></br>

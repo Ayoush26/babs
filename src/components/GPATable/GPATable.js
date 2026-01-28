@@ -4,7 +4,6 @@ import "./GPATable.css";
 import logo from "./../../images/logo.png";
 import grade from "./../../util/grade";
 import mpg from "../../util/mpg";
-import ReactWaterMark from "react-watermark-component";
 
 export class GPATable extends Component {
   constructor() {
