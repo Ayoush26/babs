@@ -346,7 +346,7 @@ export const TemporaryResult = () => {
                 className={`${styles.h2} pb-2`}
                 style={{ textTransform: "uppercase" }}
               >
-                {result.term} TERM EXAMINATION {result.year} BS
+                {result.term} {result.term.toUpperCase()==='FINAL' ? '' : 'TERM'} EXAMINATION {result.year} BS
               </h2>
               <h1 className={styles.h1}>GRADE-SHEET</h1>
             </div>
