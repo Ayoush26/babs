@@ -551,9 +551,8 @@ export const TemporaryResult = () => {
                     {arg?.gpa}  {`(${gradefromgpa(+arg?.gpa)})`}
                   </div>
                 </div>
-                <div
+                {/* <div
                   className={`${styles.gpa} d-flex align-items-center`}
-                // style={{ marginBottom: "10px"}}
                 >
                   RANK:
                   <div
@@ -562,7 +561,7 @@ export const TemporaryResult = () => {
                   >
                     {rank}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div
