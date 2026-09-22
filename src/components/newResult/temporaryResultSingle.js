@@ -1,0 +1,590 @@
+import { useEffect, useState, Fragment } from "react";
+import { useLocation } from "react-router-dom";
+import gradetoGPA from "../../util/gradetoGPA";
+import httpClient from "../../util/httpClient";
+import mpg from "../../util/mpg";
+import logo from "./../../images/logo.png";
+import styles from "./temporaryResult.module.css";
+import grade from "../../util/grade";
+import graderemarks from "../../util/graderemarks";
+import gpatoremarks from "../../util/gpatoremarks";
+import gradefromgpa from "../../util/gradefromgpa";
+
+export const TemporaryResult = () => {
+  const [result, setResult] = useState({
+    term: "",
+    year: "",
+    name: "",
+    rank: ""
+  });
+
+  const slug = useLocation();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [settingsRes, marksheetRes] = await Promise.all([
+          httpClient.get("/settings"),
+          httpClient.get(`/marksheet/${slug.search.split("&")[1]}`),
+        ]);
+
+        const currentClass = slug.search.split("&")[1];
+
+        // 1. Work entirely on updatedMarksheet
+        const updatedMarksheet = JSON.parse(JSON.stringify(marksheetRes.data.data));
+
+        // 2. GPA calculation
+        updatedMarksheet.forEach(student => {
+          const marksInfo = student.marksInfo;
+          const subjects = Object.keys(marksInfo);
+
+          let totalGradePoint = 0;
+          let totalCredit = 0;
+
+          subjects.forEach(subject => {
+            const info = marksInfo[subject];
+            // Skip if fullMarks is "Grade"
+            if (info.fullMarks === "Grade") return;
+            const credit = info.fullMarks === "50" ? 2 : 4;
+            totalCredit += credit;
+
+            const examMarks = +info.exam || 0;
+            const testMarks = +info.test || 0;
+            const sumMarks = examMarks + testMarks;
+            const gradePoint = mpg(sumMarks, +info.fullMarks).gradePoint;
+            totalGradePoint += gradePoint * credit;
+          });
+
+          student.gpa = totalCredit ? +(totalGradePoint / totalCredit).toFixed(2) : 0;
+        });
+
+        // 3. (Temporary) Subject order fix for Nursery **on updatedMarksheet**
+        if (currentClass === "Nursery") {
+          updatedMarksheet.forEach(student => {
+            const marksInfo = student.marksInfo;
+            const reorderedMarksInfo = {};
+
+            if (marksInfo.English) reorderedMarksInfo.English = marksInfo.English;
+            if (marksInfo.Nepali) reorderedMarksInfo.Nepali = marksInfo.Nepali;
+            if (marksInfo.Maths) reorderedMarksInfo.Maths = marksInfo.Maths;
+
+            Object.keys(marksInfo).forEach(subject => {
+              if (
+                subject !== "English" &&
+                subject !== "Nepali" &&
+                subject !== "Maths"
+              ) {
+                reorderedMarksInfo[subject] = marksInfo[subject];
+              }
+            });
+
+            student.marksInfo = reorderedMarksInfo;
+          });
+        }
+
+        // 4. Ranking
+        const students = JSON.parse(JSON.stringify(updatedMarksheet));
+        const sortKey = "percentage"; // or your GPA/percentage logic
+        students.sort((a, b) => b[sortKey] - a[sortKey]);
+
+        // Dense ranking
+        let prevValue = null;
+        let rank = 0;
+        for (let i = 0; i < students.length; i++) {
+          if (students[i][sortKey] !== prevValue) {
+            rank += 1;
+          }
+          students[i].rank = rank;
+          prevValue = students[i][sortKey];
+        }
+
+        // 5. Find the single selected student by index in updatedMarksheet
+        const studentIndex = +slug.search.split("&")[2];
+        const studentOriginal = updatedMarksheet[studentIndex];
+
+        function findRankByRoll(roll) {
+          const student = students.find(s => s.Roll === roll);
+          return student ? student.rank : null;
+        }
+
+        const studentRank = findRankByRoll(studentOriginal.Roll);
+
+        setResult(prev => ({
+          ...settingsRes.data.settings,
+          result: studentOriginal,
+          rank: studentRank
+        }));
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    fetchData();
+  }, [slug]);
+
+
+  // Add this effect to handle print after state updates
+  useEffect(() => {
+    if (result.result) {
+      // Check if data exists
+      window.print();
+    }
+  }, [result]); // Runs when result changes
+
+  const handleGradeMarks = (marksInfo) => {
+    const currentClass = slug.search.split("&")[1];
+
+    if (!marksInfo.test) {
+      return {
+        obtainedMarks: +marksInfo.exam,
+        fullMarks: +marksInfo.fullMarks
+      }
+    }
+    if (currentClass === "9" || currentClass === "10") {
+      return {
+        obtainedMarks: ((+marksInfo.exam / 75) * 100),
+        fullMarks: +marksInfo.fullMarks
+      }
+    }
+    if (+marksInfo.fullMarks === 100) {
+      return {
+        obtainedMarks: +marksInfo.exam,
+        fullMarks: 50
+      }
+    }
+    return {
+      obtainedMarks: (+marksInfo.exam) * 2,
+      fullMarks: 50
+    }
+  }
+
+  const mpgCAll = (marksInfo) => {
+    const newData = handleGradeMarks(marksInfo)
+    return mpg(newData.obtainedMarks, newData.fullMarks).grade
+  }
+
+  const mpgCallTest = (marksInfo) => {
+    const currentClass = slug.search.split("&")[1];
+
+    if (!marksInfo.test) return "";
+    if (+marksInfo.fullMarks === 100) {
+    if (currentClass === "9" || currentClass === "10") return  mpg(+marksInfo.test * 2, 50).grade
+      return mpg(marksInfo.test, 50).grade
+    }
+    return mpg((+marksInfo.test) * 2, 50).grade
+  }
+
+  const remarks = (marksInfo) => {
+    const grade = marksInfo.fullMarks === "Grade"
+      ? marksInfo.grade
+      : mpg(
+        +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
+        marksInfo.fullMarks
+      ).grade;
+    return graderemarks(grade)
+  }
+
+  const tableBody = (marksInfo, subject, index) => {
+    return (
+      <>
+        <div
+          className=" d-flex justify-content-center align-items-center text-center"
+          style={{
+            width: "6%",
+            paddingTop: "3px",
+          }}
+        >
+          {index}
+        </div>
+        <div
+          className=" d-flex pl-5 align-items-center text-center"
+          style={{
+            width: "36%",
+            paddingTop: "3px",
+          }}
+        >
+          {subject}
+        </div>
+        <div
+          className=" d-flex justify-content-center align-items-center text-center"
+          style={{
+            width: "6%",
+            paddingTop: "3px",
+          }}
+        >
+          {marksInfo.fullMarks === "50" ? 2 : 4}
+        </div>
+        <div
+          className=" d-flex justify-content-center align-items-center text-center"
+          style={{
+            width: "8%",
+            paddingTop: "3px",
+          }}
+        >
+          {marksInfo.fullMarks === "Grade" || mpgCAll(marksInfo)}
+        </div>
+        <div
+          className=" d-flex justify-content-center align-items-center text-center"
+          style={{
+            width: "8%",
+            paddingTop: "3px",
+          }}
+        >
+          {marksInfo.fullMarks === "Grade" || mpgCallTest(marksInfo)}
+        </div>
+        <div
+          className=" d-flex justify-content-center align-items-center text-center"
+          style={{
+            width: "8%",
+            paddingTop: "3px",
+          }}
+        >
+          {marksInfo.fullMarks === "Grade"
+            ? marksInfo.grade
+            : mpg(
+              +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
+              marksInfo.fullMarks
+            ).grade}
+        </div>
+        <div
+          className=" d-flex justify-content-center align-items-center text-center"
+          style={{
+            width: "8%",
+            paddingTop: "3px",
+          }}
+        >
+          {marksInfo.fullMarks === "Grade"
+
+            || mpg(
+              +marksInfo.exam + (marksInfo.test ? +marksInfo.test : 0),
+              marksInfo.fullMarks
+            ).gradePoint}
+        </div>
+        <div
+          className={`d-flex justify-content-center align-items-center text-center ${styles.remarks}`}
+          style={{
+            width: "18%",
+            paddingTop: "3px",
+            paddingLeft: "15px"
+          }}
+        >
+          {remarks(marksInfo)}
+        </div>
+      </>
+    );
+  };
+
+  const temporaryResultJSX = (arg, rank) => {
+    console.log(arg)
+    return (
+      <div className={`${styles.wrapper} position-relative`}>
+        <div className={`${styles.watermark} d-flex flex-column`}>
+          <img src={logo} alt="watermarklogo" />
+          <h1
+            className={styles.h1}
+            style={{
+              transform: "scale(2)",
+              paddingBottom: "40px",
+              opacity: "0.2",
+              marginTop: "190px",
+            }}
+          >
+            BUDDHA ADARSHA
+          </h1>
+          <div
+            className="d-flex"
+            style={{
+              justifyContent: "space-around",
+              transform: "scale(2)",
+              width: "100%",
+              opacity: "0.2",
+            }}
+          >
+
+          </div>
+        </div>
+        <div className={styles.content}>
+          <div className={`position-absolute ${styles.logo}`}>
+            <img src={logo} alt="logo"></img>
+          </div>
+          <div className="flex-column">
+            <div className="text-center pt-5 pb-5 flex flex-column ">
+              <h1 className={styles.h1}>BUDDHA ADARSHA BOARDING SCHOOL</h1>
+              <h3 className={`${styles.h3} pb-2`}>
+                DIP PATH, DHARAN-9, SUNSARI, NEPAL
+              </h3>
+            </div>
+            <div className="text-center pb-5 flex flex-column ">
+              <h2
+                className={`${styles.h2} pb-2`}
+                style={{ textTransform: "uppercase" }}
+              >
+                {result.term} {result.term.toUpperCase()==='FINAL' ? '' : 'TERM'} EXAMINATION {result.year} BS
+              </h2>
+              <h1 className={styles.h1}>GRADE-SHEET</h1>
+            </div>
+            <div className="px-5 pt-2">
+              <div className="d-flex mb-4">
+                <p className={styles.p}>THE GRADE(S) IS SECURED BY</p>
+                <span className={`${styles.span} ml-3`}>{arg?.Name}</span>
+              </div>
+              <div className="row">
+                <div className="d-flex mb-4 col-6">
+                  <p className={styles.p}>CLASS</p>
+                  <span className={`${styles.span} ml-3`}>{arg?.class}</span>
+                </div>
+                <div className="d-flex mb-4 col-6">
+                  <p className={styles.p}>ROll NO</p>
+                  <span className={`${styles.span} ml-3`}>{arg?.Roll}</span>
+                </div>
+              </div>
+              <div className="d-flex mb-4">
+                <p className={styles.p}>
+                  IN THE TERM EXAM, ClASS-{arg?.class.toUpperCase()} OF
+                </p>
+                <span className={`${styles.span} mx-3`}>{result.year} BS</span>
+                <p className={styles.p}>ARE GIVEN BELOW:</p>
+              </div>
+            </div>
+
+            {/*Table start*/}
+            <div className={`${styles.table} position-relative`}>
+              <div className={`${styles.header}`}>
+                <div
+                  className={`${styles.line} position-absolute d-flex`}
+                  style={{ top: "0", left: "6%" }}
+                ></div>
+                <div
+                  className={`${styles.line} position-absolute d-flex`}
+                  style={{ top: "0", left: "41.5%" }}
+                ></div>
+                <div
+                  className={`${styles.line} position-absolute d-flex`}
+                  style={{ top: "0", left: "48%" }}
+                ></div>
+
+                <div
+                  className={`position-absolute d-flex`}
+                  style={{
+                    top: "71px",
+                    left: "56%",
+                    borderLeft: "1px solid black",
+                    height: "489px"
+                  }}
+                ></div>
+                <div
+                  className={`${styles.line} position-absolute d-flex`}
+                  style={{ top: "0", left: "64%" }}
+                ></div>
+                <div
+                  className={`${styles.line} position-absolute d-flex`}
+                  style={{ top: "0", left: "72%" }}
+                ></div>
+                <div
+                  className={`${styles.line} position-absolute d-flex`}
+                  style={{ top: "0", left: "80%" }}
+                ></div>
+
+                {/* header content start*/}
+                <div className="d-flex">
+                  <div
+                    className=" d-flex justify-content-center align-items-center text-center"
+                    style={{
+                      width: "6%",
+                      height: "110px",
+                      writingMode: "vertical-rl",
+                      transform: "scale(-1)",
+                    }}
+                  >
+                    SERIAL NUMBER
+                  </div>
+                  <div
+                    className=" d-flex justify-content-center align-items-center text-center"
+                    style={{
+                      width: "36%",
+                      height: "110px",
+                    }}
+                  >
+                    SUBJECTS
+                  </div>
+                  <div
+                    className=" d-flex justify-content-center align-items-center text-center"
+                    style={{
+                      width: "6%",
+                      height: "110px",
+                      writingMode: "vertical-rl",
+                      transform: "scale(-1)",
+                    }}
+                  >
+                    CREDIT HOUR
+                  </div>
+                  <div
+                    className=" d-flex justify-content-center align-items-center text-center"
+                    style={{
+                      width: "16%",
+                      height: "110px",
+                    }}
+                  >
+                    <div className="d-flex flex-column w-100">
+                      <div style={{ borderBottom: "1px solid black" }}>
+                        OBTAINED GRADE
+                      </div>
+                      <div className="d-flex h-100">
+                        <div className="w-50">TH</div>
+                        <div className="w-50">IN</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    className=" d-flex justify-content-center align-items-center text-center"
+                    style={{
+                      width: "8%",
+                      height: "110px",
+                      writingMode: "vertical-rl",
+                      transform: "scale(-1)",
+                    }}
+                  >
+                    FINAL GRADE
+                  </div>
+                  <div
+                    className=" d-flex justify-content-center align-items-center text-center"
+                    style={{
+                      width: "8%",
+                      height: "110px",
+                      writingMode: "vertical-rl",
+                      transform: "scale(-1)",
+                    }}
+                  >
+                    GRADE POINT
+                  </div>
+                  <div
+                    className=" d-flex justify-content-center align-items-center text-center"
+                    style={{
+                      width: "8%",
+                      height: "110px",
+                      marginLeft: "44px"
+                    }}
+                  >
+                    REMARKS
+                  </div>
+                </div>
+                {/* header content end*/}
+
+                {/* table content start*/}
+                <div className="pt-4">
+                  {arg &&
+                    Object.keys(arg.marksInfo).map((subject, index) => {
+                      return (
+                        <Fragment key={subject}>
+                          <div className={`${styles.bmFont} d-flex`}>
+                            {tableBody(
+                              arg.marksInfo[subject],
+                              subject,
+                              index + 1
+                            )}
+                          </div>
+                        </Fragment>
+                      );
+                    })}
+                </div>
+                {/* table content end*/}
+              </div>
+            </div>
+            {/*Table end*/}
+            <div className={styles.gradeInfo}>
+              <div style={{ paddingLeft: "10px" }}>
+                <div className={`${styles.gpa} d-flex align-items-center`}>
+                  ATTENDANCE:
+                  <div
+                    className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
+                    style={{ order: "-1", fontWeight: "900" }}
+                  >
+                    {arg?.attendance ? arg.attendance : "N/A"}
+                  </div>
+                </div>
+              </div>
+              <div style={{ paddingLeft: "10px" }}>
+                <div className={`${styles.gpa} d-flex align-items-center`}>
+                  REMARKS:
+                  <div
+                    className={`${styles.remarks} d-flex justify-content-center align-items-center `}
+                    style={{ order: "-1", fontWeight: "900", fontSize: "1.22rem", paddingTop: "0.1rem", flexWrap: 'nowrap', whiteSpace: 'nowrap' }}
+                  >
+                    {gpatoremarks(arg?.gpa).toUpperCase()}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className={`${styles.gpa} d-flex align-items-center`} style={{ flexWrap: 'nowrap', whiteSpace: 'nowrap' }} >
+                  GRADE POINT AVERAGE:
+                  <div
+                    className={`${styles.bmFont} d-flex justify-content-center align-items-center`}
+                    style={{ order: "-1", fontWeight: "900", flexWrap: 'nowrap', whiteSpace: 'nowrap' }}
+                  >
+                    {arg?.gpa}  {`(${gradefromgpa(+arg?.gpa)})`}
+                  </div>
+                </div>
+                {/* <div
+                  className={`${styles.gpa} d-flex align-items-center`}
+                >
+                  RANK:
+                  <div
+                    className={`${styles.bmFont} d-flex justify-content-center align-items-center `}
+                    style={{ order: "-1", fontWeight: "900" }}
+                  >
+                    {rank}
+                  </div>
+                </div> */}
+              </div>
+            </div>
+            <div
+              className={` ${styles.sign} row`}
+              style={{ marginTop: "120px", marginLeft: "30px" }}
+            >
+              <div className="col-md-3 bt">
+                <p
+                  className={`${styles.p} text-center`}
+                  style={{ borderTop: "1px solid black", paddingTop: "10px", fontSize: "20px" }}
+                >
+                  Class Teacher
+                </p>
+              </div>
+              <div className="col-md-1"></div>
+              <div className="col-md-3 bt">
+                <p
+                  className={`${styles.p} text-center`}
+                  style={{
+                    borderTop: "1px solid black",
+                    paddingTop: "10px",
+                    marginRight: "5px",
+                    fontSize: "20px"
+                  }}
+                >
+                  School's Seal
+                </p>
+              </div>
+              <div className="col-md-1"></div>
+
+              <div className="col-md-3 bt">
+                <p
+                  className={`${styles.p} text-center`}
+                  style={{ borderTop: "1px solid black", paddingTop: "10px", fontSize: "20px", marginRight: "40px" }}
+                >
+                  Principal
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  console.log(result)
+
+  return (
+    <div className={styles.wrapperMain}>
+      {result.result && temporaryResultJSX(result.result, result.rank)}
+    </div>
+  );
+};

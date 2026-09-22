@@ -13,7 +13,7 @@ import { Subjects } from "./components/subjects/subjects";
 import { ViewBill } from "./components/viewBill/viewBill";
 import { ViewResult } from "./components/viewResult/viewResult";
 import { NewResult } from "./components/newResult/newResult";
-import { TemporaryResult } from "./components/newResult/temporaryResult";
+import { TemporaryResult } from "./components/newResult/temporaryResultSingle";
 import { Configure } from "./components/configure/configure";
 import { Student } from "./components/student/student";
 import { Attendance } from "./components/attendance/attendance";
