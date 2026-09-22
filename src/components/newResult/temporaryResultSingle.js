@@ -13,23 +13,26 @@ const examInfo = {
 };
 
 // ---- Static student record (same shape as what the API used to return) ----
+// Note: the source document only showed final grades, not raw marks, so the
+// exam/test values below were reverse-engineered to land on the exact same
+// TH / IN / Final grade, grade point, and GPA (2.97) shown on that sheet.
 const student = {
-  _id: "6a71de8916f8d0005406b4f5",
-  Name: "Aarika Shrestha",
-  Roll: "1",
+  _id: "6a71de8916f8d0005406b4f6",
+  Name: "Surakshya Tigela Limbu",
+  Roll: "26",
   class: "4",
   marksInfo: {
-    English: { exam: "38", fullMarks: "100", test: "48" },
-    Nepali: { exam: "46", fullMarks: "100", test: "45" },
-    Maths: { exam: "27", fullMarks: "100", test: "45" },
-    Science: { exam: "20", fullMarks: "100", test: "40" },
-    Samajik: { exam: "31", fullMarks: "100", test: "34" },
-    Grammar: { exam: "27", fullMarks: "100", test: "40" },
-    Health: { exam: "11", fullMarks: "50", test: "22" },
-    Computer: { exam: "10", fullMarks: "50", test: "22" },
+    Wonder: { exam: "29", fullMarks: "100", test: "42" },
+    Nepali: { exam: "36", fullMarks: "100", test: "40" },
+    Maths: { exam: "22", fullMarks: "100", test: "36" },
+    Science: { exam: "22", fullMarks: "100", test: "42" },
+    Samajik: { exam: "37", fullMarks: "100", test: "41" },
+    Grammar: { exam: "38", fullMarks: "100", test: "40" },
+    Health: { exam: "13", fullMarks: "50", test: "20" },
+    Computer: { exam: "16", fullMarks: "50", test: "18" },
   },
-  percentage: 72.29,
-  attendance: "53/59",
+  percentage: 70.29,
+  attendance: "53/54",
 };
 // ------------------------------------------------------
 
@@ -325,4 +328,3 @@ export const TemporaryResult = () => {
     </div>
   );
 };
-s
